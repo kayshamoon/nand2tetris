@@ -1,0 +1,57 @@
+// This file is part of nand2tetris, as taught in The Hebrew University, and
+// was written by Aviv Yaish. It is an extension to the specifications given
+// [here](https://www.nand2tetris.org) (Shimon Schocken and Noam Nisan, 2017),
+// as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
+// Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+
+
+// The ExtendAlu chip is an extension of the standard ALU which also supports
+// shift operations.
+// The inputs of the extended ALU are instruction[9], x[16], y[16].
+// The "ng" and "zr" output pins behave the same as in the regular ALU.
+// The "out" output is defined as follows:
+// If instruction[8]=1 and instruction[7]=1 the output is identical to the 
+// regular ALU, where:
+// instruction[5]=zx, instruction[4]=nx, ..., instruction[0]=no
+// Else, if instruction[8]=0 and instruction[7]=1, the output is a shift:
+// - If instruction[4] == 0, the input "y" will be shifted, otherwise "x".
+// - If instruction[5] == 0, the shift will be a right-shift, otherwise left.
+// - All other inputs are undefined.
+
+CHIP ExtendAlu {
+    IN x[16], y[16], instruction[9];
+    OUT out[16], zr, ng;
+    
+    PARTS:
+    Mux16 (a=x, b=false, sel=instruction[5], out=xafterz);
+    Not16 (in=xafterz, out=notx);
+    Mux16 (a=xafterz, b=notx, sel=instruction[4], out=xtof);
+
+    Mux16 (a=y, b=false, sel=instruction[3], out=yafterz);
+    Not16 (in=yafterz, out=noty);
+    Mux16 (a=yafterz, b=noty, sel=instruction[2], out=ytof);
+
+    And16 (a=xtof, b=ytof, out=xandy);
+    Add16 (a=xtof, b=ytof, out=xplusy);
+    Mux16 (a=xandy, b=xplusy, sel=instruction[1], out=tempout);
+
+    Not16 (in=tempout, out=notout);
+    Mux16 (a=tempout, b=notout, sel=instruction[0], out=regout);
+
+    ShiftLeft (in=x, out=Lx);
+    ShiftRight (in=x, out=Rx);
+    ShiftLeft (in=y, out=Ly);
+    ShiftRight (in=y, out=Ry);
+
+    Mux16 (a=Rx, b=Lx, sel=instruction[5], out=shiftedx);
+    Mux16 (a=Ry, b=Ly, sel=instruction[5], out=shiftedy);
+    Mux16 (a=shiftedy, b=shiftedx, sel=instruction[4], out=shiftedout);
+
+    And (a=instruction[7], b=instruction[8], out=outsel);
+    Mux16 (b=regout, a=shiftedout, sel=outsel, out=out, out[0..7]=outa, out[8..15]=outb, out[15]=ng);
+
+    Or8Way (in=outa, out=ora);
+    Or8Way (in=outb, out=orb);
+    Or (a=ora, b=orb, out=isnotzero);
+    Not (in=isnotzero, out=zr);
+}
