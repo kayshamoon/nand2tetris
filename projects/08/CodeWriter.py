@@ -21,6 +21,7 @@ class CodeWriter:
         self.output_stream = output_stream
         self.current_file = ""
         self.label_counter = 0
+        self.current_function = ""
         self.return_address_counter = 0
 
     def set_file_name(self, filename: str) -> None:
@@ -197,14 +198,14 @@ class CodeWriter:
 
             # set D to -1 (true) or 0 (false)
             self.output_stream.write(
-                f"\t@TRUE{self.label_counter}\n"
-                f"\tD;{jump_command}\n"  # if condition is met, jump to TRUE
-                 "\tD=0\n"                # D = false
-                f"\t@END{self.label_counter}\n"
-                 "\t0;JMP\n"
-                f"(TRUE{self.label_counter})\n"
-                 "\tD=-1\n"               # D = true
-                f"(END{self.label_counter})\n"
+                f"\t@{self.current_function}.TRUE_{self.label_counter}\n"
+                f"\tD;{jump_command}\n"   # if condition is true, jump to TRUE
+                "\tD=0\n"                 # D = false (0)
+                f"\t@{self.current_function}.END_{self.label_counter}\n"
+                "\t0;JMP\n"               # jump to END
+                f"({self.current_function}.TRUE_{self.label_counter})\n"
+                "\tD=-1\n"                # D = true (-1)
+                f"({self.current_function}.END_{self.label_counter})\n"
             )
             self.label_counter += 1
 
@@ -344,7 +345,7 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         self.output_stream.write(
-            f"({label})\n"
+            f"\n({label})\n"
         )
 
     def write_goto(self, label: str) -> None:
@@ -355,9 +356,12 @@ class CodeWriter:
         """
         # This is irrelevant for project 7,
         # you will implement this in project 8!
+        self.write_comment(f"goto {label}")
+
+        self.write_label(f"{self.current_function}${label}")
+
         self.output_stream.write(
-            f"\t@{label}\n"
-             "\t0;JPM\n"
+             "\t0;JMP\n"
         )
     
     def write_if(self, label: str) -> None:
@@ -368,16 +372,20 @@ class CodeWriter:
         """
         # This is irrelevant for project 7,
         # you will implement this in project 8!
+        self.write_comment(f"if-goto {label}")
+
         self.output_stream.write(
              "\t@SP\n"       #top->D
-             "\tA=M-1\n"
+             "\tAM=M-1\n"
              "\tD=M\n"
-             "\t@SP\n"       #SP--
-             "\tM=M-1\n"
-            f"\t@{label}\n"
-             "\t0;JLT\n"
         )
-    
+
+        self.write_label(f"{self.current_function}${label}")
+
+        self.output_stream.write(
+             "\tD;JNE\n"
+        )
+
     def write_function(self, function_name: str, n_vars: int) -> None:
         """Writes assembly code that affects the function command.
         The handling of each "function Xxx.foo" command within the file Xxx.vm
@@ -396,9 +404,24 @@ class CodeWriter:
         # (function_name)       // injects a function entry label into the code
         # repeat n_vars times:  // n_vars = number of local variables
         #   push constant 0     // initializes the local variables to 0
+        self.write_comment(f"function {function_name} {n_vars}")
+
+        self.current_function = function_name
+        self.return_address_counter = 0
+
         self.write_label(function_name)
+
         for i in range(n_vars):
-            self.write_push_pop("C_PUSH", "constant", 0)
+            # push constant 0
+            self.output_stream.write(
+                "\t@0\n"
+                 "\tD=A\n"         # D = 0
+                 "\t@SP\n"
+                 "\tA=M\n"         # A = SP
+                 "\tM=D\n"         # *SP = 0
+                 "\t@SP\n"
+                 "\tM=M+1\n"       # SP++
+            )
     
     def write_call(self, function_name: str, n_args: int) -> None:
         """Writes assembly code that affects the call command.
@@ -433,7 +456,7 @@ class CodeWriter:
 
         # push return_address
         self.output_stream.write(
-            f"\t@RETURN_ADDRESS_{self.return_address_counter}\n"
+            f"\t@{self.current_function}$ret.{self.return_address_counter}\n"
              "\tD=A\n"         # D = return address
              "\t@SP\n"
              "\tA=M\n"         # A = SP
@@ -474,14 +497,13 @@ class CodeWriter:
 
         # goto function_name
         self.output_stream.write(
-            f"\t@{function_name}\n"
+            f"\t@{self.current_function}\n"
              "\t0;JMP\n"       # goto function_name
         )
 
         # (return_address)
-        self.output_stream.write(
-            f"(RETURN_ADDRESS_{self.return_address_counter})\n"
-        )
+        self.write_label(f"{self.current_function}$ret.{self.return_address_counter}")
+
         self.return_address_counter += 1
 
     
@@ -553,6 +575,8 @@ class CodeWriter:
              "\tA=M\n"         # A = return_address
              "\t0;JMP\n"       # goto return_address
         )
+
+        self.current_function = ""
 
 
 
