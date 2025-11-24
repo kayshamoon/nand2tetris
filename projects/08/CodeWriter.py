@@ -356,8 +356,8 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         self.output_stream.write(
-            f"@{label}\n"
-            "0;JPM\n"
+            f"\t@{label}\n"
+             "\t0;JPM\n"
         )
     
     def write_if(self, label: str) -> None:
@@ -369,13 +369,13 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         self.output_stream.write(
-            "@SP\n"#top->D
-            "A=M-1\n"
-            "D=M\n"
-            "@SP\n"#SP--
-            "M=M-1\n"
-            f"@{label}\n"
-            "0;JLT\n"
+             "\t@SP\n"       #top->D
+             "\tA=M-1\n"
+             "\tD=M\n"
+             "\t@SP\n"       #SP--
+             "\tM=M-1\n"
+            f"\t@{label}\n"
+             "\t0;JLT\n"
         )
     
     def write_function(self, function_name: str, n_vars: int) -> None:
@@ -396,9 +396,9 @@ class CodeWriter:
         # (function_name)       // injects a function entry label into the code
         # repeat n_vars times:  // n_vars = number of local variables
         #   push constant 0     // initializes the local variables to 0
-        this.write_label(function_name)
+        self.write_label(function_name)
         for i in range(n_vars):
-            this.write_push_pop("C_PUSH", "constant", 0)
+            self.write_push_pop("C_PUSH", "constant", 0)
     
     def write_call(self, function_name: str, n_args: int) -> None:
         """Writes assembly code that affects the call command.
