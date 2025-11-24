@@ -30,13 +30,12 @@ def translate_file(
     if bootstrap:
         output_file.write(
             "// Bootstrap code\n"
-            "\t@256\n"
-            "\tD=A\n"     # D = 256
-            "\t@SP\n"
-            "\tM=D\n"     # SP = D (256)
-            "\t@Sys.init\n"
-            "\t0;JMP\n\n"   # goto Sys.init
+            "@256\n"
+            "D=A\n"     # D = 256
+            "@SP\n"
+            "M=D\n"     # SP = D (256)
         )
+        code_writer.write_call("Sys.init",0)
 
     while parser.has_more_commands():
         parser.advance()

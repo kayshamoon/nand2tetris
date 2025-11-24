@@ -1,11 +1,58 @@
 // Bootstrap code
-	@256
+@256
+D=A
+@SP
+M=D
+
+// call Sys.init 0
+	@Sys.init$ret.0
 	D=A
 	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@LCL
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@ARG
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THIS
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THAT
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@SP
+	D=M
+	@5
+	D=D-A
+	@ARG
+	M=D
+	@SP
+	D=M
+	@LCL
 	M=D
 	@Sys.init
 	0;JMP
-
+(Sys.init$ret.0)
 
 // function Main.fibonacci 0
 
@@ -47,14 +94,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE0
+	@Main.fibonacci$TRUE_0
 	D;JLT
 	D=0
-	@END0
+	@Main.fibonacci$END_0
 	0;JMP
-(TRUE0)
+(Main.fibonacci$TRUE_0)
 	D=-1
-(END0)
+(Main.fibonacci$END_0)
 	@SP
 	A=M
 	M=D
@@ -65,14 +112,14 @@
 	@SP
 	AM=M-1
 	D=M
-	@IF_TRUE
+	@Main.fibonacci$IF_TRUE
 	D;JNE
 
 // goto IF_FALSE
-	@IF_FALSE
-	0;JMP
+@Main.fibonacci$IF_FALSE
+0;JMP
 
-(IF_TRUE)
+(Main.fibonacci$IF_TRUE)
 
 // C_PUSH argument 0
 	@0
@@ -130,7 +177,7 @@
 	A=M
 	0;JMP
 
-(IF_FALSE)
+($IF_FALSE)
 
 // C_PUSH argument 0
 	@0
@@ -172,7 +219,7 @@
 	M=D
 
 // call Main.fibonacci 1
-	@RETURN_ADDRESS_0
+	@Main.fibonacci$ret.0
 	D=A
 	@SP
 	A=M
@@ -219,7 +266,7 @@
 	M=D
 	@Main.fibonacci
 	0;JMP
-(RETURN_ADDRESS_0)
+(Main.fibonacci$ret.0)
 
 // C_PUSH argument 0
 	@0
@@ -261,7 +308,7 @@
 	M=D
 
 // call Main.fibonacci 1
-	@RETURN_ADDRESS_1
+	@Main.fibonacci$ret.1
 	D=A
 	@SP
 	A=M
@@ -308,7 +355,7 @@
 	M=D
 	@Main.fibonacci
 	0;JMP
-(RETURN_ADDRESS_1)
+(Main.fibonacci$ret.1)
 
 // add
 	@SP
@@ -386,7 +433,7 @@
 	M=M+1
 
 // call Main.fibonacci 1
-	@RETURN_ADDRESS_0
+	@Main.fibonacci$ret.0
 	D=A
 	@SP
 	A=M
@@ -433,10 +480,10 @@
 	M=D
 	@Main.fibonacci
 	0;JMP
-(RETURN_ADDRESS_0)
+(Main.fibonacci$ret.0)
 
-(WHILE)
+(Sys.init$WHILE)
 
 // goto WHILE
-	@WHILE
-	0;JMP
+@Sys.init$WHILE
+0;JMP
