@@ -20,11 +20,47 @@ def translate_file(
     Args:
         input_file (typing.TextIO): the file to translate.
         output_file (typing.TextIO): writes all output to this file.
-        bootstrap (bool): if this is True, the current file is the 
+        bootstrap (bool): if this is True, the current file is the
             first file we are translating.
     """
-    # Your code goes here!
-    pass
+    parser = Parser(input_file)
+    code_writer = CodeWriter(output_file)
+    code_writer.set_file_name(os.path.basename(input_file.name))
+
+    if bootstrap:
+        output_file.write(
+            "// Bootstrap code\n"
+            "\t@256\n"
+            "\tD=A\n"     # D = 256
+            "\t@SP\n"
+            "\tM=D\n"     # SP = D (256)
+            "\t@Sys.init\n"
+            "\t0;JMP\n\n"   # goto Sys.init
+        )
+
+    while parser.has_more_commands():
+        parser.advance()
+        cmd_type = parser.command_type()
+        if cmd_type == "C_PUSH":
+            code_writer.write_push_pop("C_PUSH", parser.arg1(), parser.arg2())
+        elif cmd_type == "C_POP":
+            code_writer.write_push_pop("C_POP", parser.arg1(), parser.arg2())
+        elif cmd_type == "C_ARITHMETIC":
+            code_writer.write_arithmetic(parser.arg1())
+        elif cmd_type == "C_LABEL":
+            code_writer.write_label(parser.arg1())
+        elif cmd_type == "C_GOTO":
+            code_writer.write_goto(parser.arg1())
+        elif cmd_type == "C_IF":
+            code_writer.write_if(parser.arg1())
+        elif cmd_type == "C_FUNCTION":
+            code_writer.write_function(parser.arg1(), parser.arg2())
+        elif cmd_type == "C_CALL":
+            code_writer.write_call(parser.arg1(), parser.arg2())
+        elif cmd_type == "C_RETURN":
+            code_writer.write_return()
+        else:
+            raise ValueError(f"Unknown command type: {cmd_type}")
 
 
 if "__main__" == __name__:
