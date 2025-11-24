@@ -61,118 +61,130 @@ class CodeWriter:
         self.write_comment(command)
 
         if command == "add":
-            self.output_stream.write("@SP\n" #top of the stack -> R13 
-            "A=M-1\n"
-            "D=M\n"
-            "@R13\n"
-            "M=D\n"
-            "@SP\n"   #SP--
-            "M=M-1\n"
-            "@SP\n"   #top of the stack -> D
-            "A=M-1\n"
-            "D=M\n"
-            "@R13\n"  #add the numbers and save to D
-            "M=D+M\n"
-            "D=M\n"
-            "@SP\n"   #result -> top of the stack
-            "A=M-1\n"
-            "M=D\n"
+            self.output_stream.write(
+                "\t@SP\n" #top of the stack -> R13 
+                "\tA=M-1\n"
+                "\tD=M\n"
+                "\t@R13\n"
+                "\tM=D\n"
+                "\t@SP\n"   #SP--
+                "\tM=M-1\n"
+                "\t@SP\n"   #top of the stack -> D
+                "\tA=M-1\n"
+                "\tD=M\n"
+                "\t@R13\n"  #add the numbers and save to D
+                "\tM=D+M\n"
+                "\tD=M\n"
+                "\t@SP\n"   #result -> top of the stack
+                "\tA=M-1\n"
+                "\tM=D\n"
             )
 
         if command == "sub":
-            self.output_stream.write("@SP\n"  # top of the stack -> R13 
-            "A=M-1\n"
-            "D=M\n"
-            "@R13\n"
-            "M=D\n"
-            "@SP\n"  # SP--
-            "M=M-1\n"
-            "@SP\n"  # top of the stack -> D
-            "A=M-1\n"
-            "D=M\n"
-            "@R13\n"  # sub the numbers and save to D
-            "M=D-M\n"
-            "D=M\n"
-            "@SP\n"  # result -> top of the stack
-            "A=M-1\n"
-            "M=D\n"
+            self.output_stream.write(
+                "\t@SP\n"  # top of the stack -> R13 
+                "\tA=M-1\n"
+                "\tD=M\n"
+                "\t@R13\n"
+                "\tM=D\n"
+                "\t@SP\n"  # SP--
+                "\tM=M-1\n"
+                "\t@SP\n"  # top of the stack -> D
+                "\tA=M-1\n"
+                "\tD=M\n"
+                "\t@R13\n"  # sub the numbers and save to D
+                "\tM=D-M\n"
+                "\tD=M\n"
+                "\t@SP\n"  # result -> top of the stack
+                "\tA=M-1\n"
+                "\tM=D\n"
             )
 
         if command == "neg":
-            self.output_stream.write("@SP\n"
-            "A=M-1\n"
-            "M=-M\n")
+            self.output_stream.write(
+                "\t@SP\n"
+                "\tA=M-1\n"
+                "\tM=-M\n"
+            )
 
         if command == "and":
-            self.output_stream.write("@SP\n"  # top of the stack -> R13 
-            "A=M-1\n"
-            "D=M\n"
-            "@R13\n"
-            "M=D\n"
-            "@SP\n"  # SP--
-            "M=M-1\n"
-            "@SP\n"  # top of the stack -> D
-            "A=M-1\n"
-            "D=M\n"
-            "@R13\n"  # "and" the numbers and save to D
-            "M=D&M\n"
-            "D=M\n"
-            "@SP\n"  # result -> top of the stack
-            "A=M-1\n"
-            "M=D\n"
+            self.output_stream.write(
+                "\t@SP\n"  # top of the stack -> R13 
+                "\tA=M-1\n"
+                "\tD=M\n"
+                "\t@R13\n"
+                "\tM=D\n"
+                "\t@SP\n"  # SP--
+                "\tM=M-1\n"
+                "\t@SP\n"  # top of the stack -> D
+                "\tA=M-1\n"
+                "\tD=M\n"
+                "\t@R13\n"  # "and" the numbers and save to D
+                "\tM=D&M\n"
+                "\tD=M\n"
+                "\t@SP\n"  # result -> top of the stack
+                "\tA=M-1\n"
+                "\tM=D\n"
             )
         if command == "or":
-            self.output_stream.write("@SP\n"  # top of the stack -> R13 
-            "A=M-1\n"
-            "D=M\n"
-            "@R13\n"
-            "M=D\n"
-            "@SP\n"  # SP--
-            "M=M-1\n"
-            "@SP\n"  # top of the stack -> D
-            "A=M-1\n"
-            "D=M\n"
-            "@R13\n"  # "or" the numbers and save to D
-            "M=D|M\n"
-            "D=M\n"
-            "@SP\n"  # result -> top of the stack
-            "A=M-1\n"
-            "M=D\n"
+            self.output_stream.write(
+                "\t@SP\n"  # top of the stack -> R13 
+                "\tA=M-1\n"
+                "\tD=M\n"
+                "\t@R13\n"
+                "\tM=D\n"
+                "\t@SP\n"  # SP--
+                "\tM=M-1\n"
+                "\t@SP\n"  # top of the stack -> D
+                "\tA=M-1\n"
+                "\tD=M\n"
+                "\t@R13\n"  # "or" the numbers and save to D
+                "\tM=D|M\n"
+                "\tD=M\n"
+                "\t@SP\n"  # result -> top of the stack
+                "\tA=M-1\n"
+                "\tM=D\n"
             )
         if command == "not":
-            self.output_stream.write("@SP\n"
-            "A=M-1\n"
-            "M=!M\n")
+            self.output_stream.write(
+                "\t@SP\n"
+                "\tA=M-1\n"
+                "\tM=!M\n"
+            )
         if command == "shiftleft":
-            self.output_stream.write("@SP\n"
-            "A=M-1\n"
-            "M=M<<\n")
+            self.output_stream.write(
+                "\t@SP\n"
+                "\tA=M-1\n"
+                "\tM=M<<\n"
+            )
         if command == "shiftright":
-            self.output_stream.write("@SP\n"
-            "A=M-1\n"
-            "M=M>>\n")
+            self.output_stream.write(
+                "\t@SP\n"
+                "\tA=M-1\n"
+                "\tM=M>>\n"
+            )
 
         if command in {"eq", "gt", "lt"}:
             # read arguments from stack to R13 and R14
             self.output_stream.write(
-                "@SP\n"
-                "AM=M-1\n"   # SP--; A=SP
-                "D=M\n"      # D = *SP
-                "@R14\n"
-                "M=D\n"      # R14 = arg2
+                "\t@SP\n"
+                "\tAM=M-1\n"   # SP--; A=SP
+                "\tD=M\n"      # D = *SP
+                "\t@R14\n"
+                "\tM=D\n"      # R14 = arg2
                 
-                "@SP\n"
-                "AM=M-1\n"   # SP--; A=SP
-                "D=M\n"      # D = *SP
-                "@R13\n"
-                "M=D\n"      # R13 = arg1
+                "\t@SP\n"
+                "\tAM=M-1\n"   # SP--; A=SP
+                "\tD=M\n"      # D = *SP
+                "\t@R13\n"
+                "\tM=D\n"      # R13 = arg1
             )
             # calc x-y and store in D
             self.output_stream.write(
-                "@R13\n"
-                "D=M\n"      # D = arg1
-                "@R14\n"
-                "D=D-M\n"    # D = arg1 - arg2
+                "\t@R13\n"
+                "\tD=M\n"      # D = arg1
+                "\t@R14\n"
+                "\tD=D-M\n"    # D = arg1 - arg2
             )
 
             if command == "eq":
@@ -184,24 +196,24 @@ class CodeWriter:
 
             # set D to -1 (true) or 0 (false)
             self.output_stream.write(
-                f"@TRUE{self.label_counter}\n"
-                f"D;{jump_command}\n"  # if condition is met, jump to TRUE
-                "D=0\n"                # D = false
-                f"@END{self.label_counter}\n"
-                "0;JMP\n"
+                f"\t@TRUE{self.label_counter}\n"
+                f"\tD;{jump_command}\n"  # if condition is met, jump to TRUE
+                 "\tD=0\n"                # D = false
+                f"\t@END{self.label_counter}\n"
+                 "\t0;JMP\n"
                 f"(TRUE{self.label_counter})\n"
-                "D=-1\n"               # D = true
+                 "\tD=-1\n"               # D = true
                 f"(END{self.label_counter})\n"
             )
             self.label_counter += 1
 
             # push D to stack
             self.output_stream.write(
-                "@SP\n"
-                "A=M\n"      # A = SP
-                "M=D\n"      # *SP = D
-                "@SP\n"
-                "M=M+1\n"    # SP++
+                "\t@SP\n"
+                "\tA=M\n"      # A = SP
+                "\tM=D\n"      # *SP = D
+                "\t@SP\n"
+                "\tM=M+1\n"    # SP++
             )
 
 
@@ -233,19 +245,19 @@ class CodeWriter:
         if segment == "constant":
             # simply load index to A
             self.output_stream.write(
-                f"@{index}\n"
-                "D=A\n"  # D = index
-                "@SP\n"
-                "A=M\n"  # A = SP
-                "M=D\n"  # *SP = D
-                "@SP\n"
-                "M=M+1\n"  # SP++
+                f"\t@{index}\n"
+                 "\tD=A\n"  # D = index
+                 "\t@SP\n"
+                 "\tA=M\n"  # A = SP
+                 "\tM=D\n"  # *SP = D
+                 "\t@SP\n"
+                 "\tM=M+1\n"  # SP++
             )
         else:
             if segment == "static":
                 # creates new variable named current_file.index
                 self.output_stream.write(
-                    f"@{self.current_file}.{index}\n"
+                    f"\t@{self.current_file}.{index}\n"
                 )
             elif segment == "pointer":
                 # pointer 0 is THIS (RAM[3]), pointer 1 is THAT (RAM[4])
@@ -253,39 +265,39 @@ class CodeWriter:
                     raise ValueError(f"invalid pointer index: {index}")
 
                 self.output_stream.write(
-                    f"@{3 + index}\n"
+                    f"\t@{3 + index}\n"
                 )
             elif segment == "temp":
                 # temp segment is mapped to RAM[5]-RAM[12]
                 self.output_stream.write(
-                    f"@{5 + index}\n"
+                    f"\t@{5 + index}\n"
                 )
 
             elif segment in {"argument", "local", "this", "that"}:
                 self.output_stream.write(
-                    f"@{index}\n"
-                    "D=A\n"
+                    f"\t@{index}\n"
+                     "\tD=A\n"
 
                 )
                 if segment == "argument":
                     self.output_stream.write(
-                        "@ARG\n"
+                        "\t@ARG\n"
                     )
                 elif segment == "local":
                     self.output_stream.write(
-                        "@LCL\n"
+                        "\t@LCL\n"
                     )
                 elif segment == "this":
                     self.output_stream.write(
-                        "@THIS\n"
+                        "\t@THIS\n"
                     )
                 elif segment == "that":
                     self.output_stream.write(
-                        "@THAT\n"
+                        "\t@THAT\n"
                     )
 
                 self.output_stream.write(
-                    "A=M+D\n"
+                    "\tA=M+D\n"
                 )
 
             # now A register has the address of segment[index]
@@ -293,25 +305,25 @@ class CodeWriter:
             if command == "C_PUSH":
                 # push the value at D into the stack
                 self.output_stream.write(
-                    "D=M\n"      # D = segment[index]
-                    "@SP\n"
-                    "A=M\n"      # A = SP
-                    "M=D\n"      # *SP = D
-                    "@SP\n"
-                    "M=M+1\n"    # SP++
+                    "\tD=M\n"      # D = segment[index]
+                    "\t@SP\n"
+                    "\tA=M\n"      # A = SP
+                    "\tM=D\n"      # *SP = D
+                    "\t@SP\n"
+                    "\tM=M+1\n"    # SP++
                 )
             elif command == "C_POP":
                 # pop the topmost stack value into segment[index]
                 self.output_stream.write(
-                    "D=A\n"      # D = address of segment[index]
-                    "@R13\n"     # use R13 as a temp variable
-                    "M=D\n"      # R13 = address of segment[index]
-                    "@SP\n"
-                    "AM=M-1\n"   # SP--; A=SP
-                    "D=M\n"      # D = *SP
-                    "@R13\n"
-                    "A=M\n"      # A = segment[index] address
-                    "M=D\n"      # segment[index] = D
+                    "\tD=A\n"      # D = address of segment[index]
+                    "\t@R13\n"     # use R13 as a temp variable
+                    "\tM=D\n"      # R13 = address of segment[index]
+                    "\t@SP\n"
+                    "\tAM=M-1\n"   # SP--; A=SP
+                    "\tD=M\n"      # D = *SP
+                    "\t@R13\n"
+                    "\tA=M\n"      # A = segment[index] address
+                    "\tM=D\n"      # segment[index] = D
                 )
 
 
@@ -331,7 +343,7 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         pass
-    
+
     def write_goto(self, label: str) -> None:
         """Writes assembly code that affects the goto command.
 
@@ -341,7 +353,7 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         pass
-    
+
     def write_if(self, label: str) -> None:
         """Writes assembly code that affects the if-goto command.
 
@@ -351,7 +363,7 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         pass
-    
+
     def write_function(self, function_name: str, n_vars: int) -> None:
         """Writes assembly code that affects the function command.
         The handling of each "function Xxx.foo" command within the file Xxx.vm
@@ -371,7 +383,7 @@ class CodeWriter:
         # repeat n_vars times:  // n_vars = number of local variables
         #   push constant 0     // initializes the local variables to 0
         pass
-    
+
     def write_call(self, function_name: str, n_args: int) -> None:
         """Writes assembly code that affects the call command.
         Let "Xxx.foo" be a function within the file Xxx.vm.
@@ -401,7 +413,7 @@ class CodeWriter:
         # goto function_name    // transfers control to the callee
         # (return_address)      // injects the return address label into the code
         pass
-    
+
     def write_return(self) -> None:
         """Writes assembly code that affects the return command."""
         # This is irrelevant for project 7,
@@ -424,4 +436,4 @@ class CodeWriter:
         Args:
             comment (str): the comment to write.
         """
-        self.output_stream.write(f"// {comment}\n")
+        self.output_stream.write(f"\n// {comment}\n")
