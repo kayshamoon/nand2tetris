@@ -342,8 +342,10 @@ class CodeWriter:
         """
         # This is irrelevant for project 7,
         # you will implement this in project 8!
-        pass
-    
+        self.output_stream.write(
+            f"({label})\n"
+        )
+
     def write_goto(self, label: str) -> None:
         """Writes assembly code that affects the goto command.
 
@@ -352,7 +354,10 @@ class CodeWriter:
         """
         # This is irrelevant for project 7,
         # you will implement this in project 8!
-        pass
+        self.output_stream.write(
+            f"@{label}\n"
+            "0;JPM\n"
+        )
     
     def write_if(self, label: str) -> None:
         """Writes assembly code that affects the if-goto command.
@@ -362,7 +367,15 @@ class CodeWriter:
         """
         # This is irrelevant for project 7,
         # you will implement this in project 8!
-        pass
+        self.output_stream.write(
+            "@SP\n"#top->D
+            "A=M-1\n"
+            "D=M\n"
+            "@SP\n"#SP--
+            "M=M-1\n"
+            f"@{label}\n"
+            "0;JLT\n"
+        )
     
     def write_function(self, function_name: str, n_vars: int) -> None:
         """Writes assembly code that affects the function command.
@@ -382,7 +395,9 @@ class CodeWriter:
         # (function_name)       // injects a function entry label into the code
         # repeat n_vars times:  // n_vars = number of local variables
         #   push constant 0     // initializes the local variables to 0
-        pass
+        this.write_label(function_name)
+        for i in range(n_vars):
+            this.write_push_pop("C_PUSH", "constant", 0)
     
     def write_call(self, function_name: str, n_args: int) -> None:
         """Writes assembly code that affects the call command.
