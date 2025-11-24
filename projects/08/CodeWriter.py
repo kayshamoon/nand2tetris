@@ -21,6 +21,7 @@ class CodeWriter:
         self.output_stream = output_stream
         self.current_file = ""
         self.label_counter = 0
+        self.return_address_counter = 0
 
     def set_file_name(self, filename: str) -> None:
         """Informs the code writer that the translation of a new VM file is 
@@ -412,7 +413,62 @@ class CodeWriter:
         # LCL = SP              // repositions LCL
         # goto function_name    // transfers control to the callee
         # (return_address)      // injects the return address label into the code
-        pass
+
+        self.write_comment(f"call {function_name} {n_args}")
+
+        # push return_address
+        self.output_stream.write(
+            f"\t@RETURN_ADDRESS_{self.return_address_counter}\n"
+             "\tD=A\n"         # D = return address
+             "\t@SP\n"
+             "\tA=M\n"         # A = SP
+             "\tM=D\n"         # *SP = return address
+             "\t@SP\n"
+             "\tM=M+1\n"       # SP++
+        )
+
+        # push LCL, ARG, THIS, THAT
+        for segment in ["LCL", "ARG", "THIS", "THAT"]:
+            self.output_stream.write(
+                f"\t@{segment}\n"
+                 "\tD=M\n"         # D = segment
+                 "\t@SP\n"
+                 "\tA=M\n"         # A = SP
+                 "\tM=D\n"         # *SP = segment
+                 "\t@SP\n"
+                 "\tM=M+1\n"       # SP++
+            )
+
+        # ARG = SP - (5 + n_args)
+        self.output_stream.write(
+             "\t@SP\n"
+             "\tD=M\n"         # D = SP
+            f"\t@{5+n_args}\n"
+             "\tD=D-A\n"       # D = SP - 5 - n_args
+             "\t@ARG\n"
+             "\tM=D\n"         # ARG = D
+        )
+
+        # LCL = SP
+        self.output_stream.write(
+             "\t@SP\n"
+             "\tD=M\n"         # D = SP
+             "\t@LCL\n"
+             "\tM=D\n"         # LCL = D
+        )
+
+        # goto function_name
+        self.output_stream.write(
+            f"\t@{function_name}\n"
+             "\t0;JMP\n"       # goto function_name
+        )
+
+        # (return_address)
+        self.output_stream.write(
+            f"(RETURN_ADDRESS_{self.return_address_counter})\n"
+        )
+        self.return_address_counter += 1
+
     
     def write_return(self) -> None:
         """Writes assembly code that affects the return command."""
@@ -428,7 +484,62 @@ class CodeWriter:
         # ARG = *(frame-3)              // restores ARG for the caller
         # LCL = *(frame-4)              // restores LCL for the caller
         # goto return_address           // go to the return address
-        pass
+
+        self.write_comment("return")
+
+        # frame = LCL
+        self.output_stream.write(
+             "\t@LCL\n"
+             "\tD=M\n"         # D = LCL
+             "\t@R13\n"
+             "\tM=D\n"         # R13 (frame) = LCL
+        )
+
+        # return_address = *(frame-5)
+        self.output_stream.write(
+             "\t@5\n"
+             "\tA=D-A\n"       # A = D (frame) - 5
+             "\tD=M\n"         # D = *(frame - 5)
+             "\t@R14\n"
+             "\tM=D\n"         # R14 (return_address) = *(frame - 5)
+        )
+
+        # *ARG = pop()
+        self.output_stream.write(
+             "\t@SP\n"
+             "\tAM=M-1\n"      # SP--; A=SP
+             "\tD=M\n"         # D = *SP
+             "\t@ARG\n"
+             "\tA=M\n"         # A = ARG
+             "\tM=D\n"         # *ARG = D (*SP)
+        )
+
+        # SP = ARG + 1
+        self.output_stream.write(
+             "\t@ARG\n"
+             "\tD=M+1\n"       # D = ARG + 1
+             "\t@SP\n"
+             "\tM=D\n"         # SP = D (ARG + 1)
+        )
+
+        # restore THAT, THIS, ARG, LCL of the caller
+        for segment in ["THAT", "THIS", "ARG", "LCL"]:
+            self.output_stream.write(
+                 "\t@R13\n"
+                 "\tAM=M-1\n"      # frame--; A=frame
+                 "\tD=M\n"         # D = *frame
+                f"\t@{segment}\n"
+                 "\tM=D\n"         # segment = D (*frame)
+            )
+
+        # goto return_address
+        self.output_stream.write(
+             "\t@R14\n"        # (R14 = return_address)
+             "\tA=M\n"         # A = return_address
+             "\t0;JMP\n"       # goto return_address
+        )
+
+
 
     def write_comment(self, comment: str) -> None:
         """Writes a comment line in the output assembly file.
