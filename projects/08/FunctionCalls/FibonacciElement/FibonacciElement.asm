@@ -3,59 +3,10 @@
 D=A
 @SP
 M=D
-
-// call Sys.init 0
-	@Sys.init$ret.0
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@LCL
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@ARG
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THIS
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THAT
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@SP
-	D=M
-	@5
-	D=D-A
-	@ARG
-	M=D
-	@SP
-	D=M
-	@LCL
-	M=D
-	@Sys.init
-	0;JMP
-(Sys.init$ret.0)
+@Sys.init
+0;JMP
 
 // function Main.fibonacci 0
-
 (Main.fibonacci)
 
 // C_PUSH argument 0
@@ -116,9 +67,8 @@ M=D
 	D;JNE
 
 // goto IF_FALSE
-@Main.fibonacci$IF_FALSE
-0;JMP
-
+	@Main.fibonacci$IF_FALSE
+	0;JMP
 (Main.fibonacci$IF_TRUE)
 
 // C_PUSH argument 0
@@ -176,8 +126,7 @@ M=D
 	@R14
 	A=M
 	0;JMP
-
-($IF_FALSE)
+(Main$IF_FALSE)
 
 // C_PUSH argument 0
 	@0
@@ -219,7 +168,7 @@ M=D
 	M=D
 
 // call Main.fibonacci 1
-	@Main.fibonacci$ret.0
+	@$ret.0
 	D=A
 	@SP
 	A=M
@@ -266,7 +215,7 @@ M=D
 	M=D
 	@Main.fibonacci
 	0;JMP
-(Main.fibonacci$ret.0)
+($ret.0)
 
 // C_PUSH argument 0
 	@0
@@ -308,7 +257,7 @@ M=D
 	M=D
 
 // call Main.fibonacci 1
-	@Main.fibonacci$ret.1
+	@$ret.1
 	D=A
 	@SP
 	A=M
@@ -355,7 +304,7 @@ M=D
 	M=D
 	@Main.fibonacci
 	0;JMP
-(Main.fibonacci$ret.1)
+($ret.1)
 
 // add
 	@SP
@@ -420,7 +369,6 @@ M=D
 	0;JMP
 
 // function Sys.init 0
-
 (Sys.init)
 
 // C_PUSH constant 4
@@ -433,7 +381,7 @@ M=D
 	M=M+1
 
 // call Main.fibonacci 1
-	@Main.fibonacci$ret.0
+	@Sys.init$ret.0
 	D=A
 	@SP
 	A=M
@@ -480,10 +428,9 @@ M=D
 	M=D
 	@Main.fibonacci
 	0;JMP
-(Main.fibonacci$ret.0)
-
+(Sys.init$ret.0)
 (Sys.init$WHILE)
 
 // goto WHILE
-@Sys.init$WHILE
-0;JMP
+	@Sys.init$WHILE
+	0;JMP

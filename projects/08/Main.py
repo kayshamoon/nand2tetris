@@ -25,7 +25,8 @@ def translate_file(
     """
     parser = Parser(input_file)
     code_writer = CodeWriter(output_file)
-    code_writer.set_file_name(os.path.basename(input_file.name))
+    input_filename, input_extension = os.path.splitext(os.path.basename(input_file.name))
+    code_writer.set_file_name(input_filename)
 
     if bootstrap:
         output_file.write(
@@ -34,8 +35,10 @@ def translate_file(
             "D=A\n"     # D = 256
             "@SP\n"
             "M=D\n"     # SP = D (256)
+            "@Sys.init\n"
+            "0;JMP\n"
         )
-        code_writer.write_call("Sys.init",0)
+        # code_writer.write_call("Sys.init", 0)
 
     while parser.has_more_commands():
         parser.advance()

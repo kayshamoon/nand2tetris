@@ -1,11 +1,12 @@
 // Bootstrap code
-	@256
-	D=A
-	@SP
-	M=D
+@256
+D=A
+@SP
+M=D
+@Sys.init
+0;JMP
 
 // function SimpleFunction.test 2
-
 (SimpleFunction.test)
 	@0
 	D=A

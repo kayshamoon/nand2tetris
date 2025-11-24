@@ -1,14 +1,5 @@
-// Bootstrap code
-	@256
-	D=A
-	@SP
-	M=D
-	@Sys.init
-	0;JMP
-
 
 // function Sys.init 0
-
 (Sys.init)
 
 // C_PUSH constant 4000
@@ -99,9 +90,8 @@
 	D=M
 	@LCL
 	M=D
-	@Sys.init
+	@Sys.main
 	0;JMP
-
 (Sys.init$ret.0)
 
 // C_POP temp 1
@@ -115,16 +105,13 @@
 	@R13
 	A=M
 	M=D
-
-(LOOP)
+(Sys.init$LOOP)
 
 // goto LOOP
-
-(Sys.init$LOOP)
-	0;JMP
+@Sys.init$LOOP
+0;JMP
 
 // function Sys.main 5
-
 (Sys.main)
 	@0
 	D=A
@@ -331,9 +318,8 @@
 	D=M
 	@LCL
 	M=D
-	@Sys.main
+	@Sys.add12
 	0;JMP
-
 (Sys.main$ret.0)
 
 // C_POP temp 0
@@ -525,7 +511,6 @@
 	0;JMP
 
 // function Sys.add12 0
-
 (Sys.add12)
 
 // C_PUSH constant 4002

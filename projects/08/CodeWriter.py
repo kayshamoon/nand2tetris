@@ -20,7 +20,7 @@ class CodeWriter:
         """
         self.output_stream = output_stream
         self.current_file = ""
-        self.label_counter = 0
+        self.arithmetic_label_counter = 0
         self.current_function = ""
         self.return_address_counter = 0
 
@@ -42,7 +42,7 @@ class CodeWriter:
         # the function "translate_file" in Main.py using python's os library,
         # For example, using code similar to:
         # input_filename, input_extension = os.path.splitext(os.path.basename(input_file.name))
-        self.current_file = filename
+        self.current_file = filename.split(".")[0]
 
     def write_arithmetic(self, command: str) -> None:
         """Writes assembly code that is the translation of the given 
@@ -198,16 +198,16 @@ class CodeWriter:
 
             # set D to -1 (true) or 0 (false)
             self.output_stream.write(
-                f"\t@{self.current_function}$TRUE_{self.label_counter}\n"
+                f"\t@{self.current_function}$TRUE_{self.arithmetic_label_counter}\n"
                 f"\tD;{jump_command}\n"   # if condition is true, jump to TRUE
                 "\tD=0\n"                 # D = false (0)
-                f"\t@{self.current_function}$END_{self.label_counter}\n"
+                f"\t@{self.current_function}$END_{self.arithmetic_label_counter}\n"
                 "\t0;JMP\n"               # jump to END
-                f"({self.current_function}$TRUE_{self.label_counter})\n"
+                f"({self.current_function}$TRUE_{self.arithmetic_label_counter})\n"
                 "\tD=-1\n"                # D = true (-1)
-                f"({self.current_function}$END_{self.label_counter})\n"
+                f"({self.current_function}$END_{self.arithmetic_label_counter})\n"
             )
-            self.label_counter += 1
+            self.arithmetic_label_counter += 1
 
             # push D to stack
             self.output_stream.write(
@@ -217,8 +217,6 @@ class CodeWriter:
                 "\t@SP\n"
                 "\tM=M+1\n"    # SP++
             )
-
-
 
     def write_push_pop(self, command: str, segment: str, index: int) -> None:
         """Writes assembly code that is the translation of the given
@@ -328,9 +326,6 @@ class CodeWriter:
                     "\tM=D\n"      # segment[index] = D
                 )
 
-
-
-
     def write_label(self, label: str) -> None:
         """Writes assembly code that affects the label command.
         Let "Xxx.foo" be a function within the file Xxx.vm. The handling of
@@ -344,10 +339,9 @@ class CodeWriter:
         """
         # This is irrelevant for project 7,
         # you will implement this in project 8!
-        if self.current_function != label:
-            self.output_stream.write(f"\n({self.current_function}${label})\n")
-        else:
-            self.output_stream.write(f"\n({label})\n")
+        label_to_write = self.add_prefix_to_label(label)
+
+        self.output_stream.write(f"({label_to_write})\n")
 
     def write_goto(self, label: str) -> None:
         """Writes assembly code that affects the goto command.
@@ -358,11 +352,11 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         self.write_comment(f"goto {label}")
+        label_to_write = self.add_prefix_to_label(label)
 
-        label_name = f"{self.current_function}${label}"
         self.output_stream.write(
-            f"@{label_name}\n"
-            "0;JMP\n"
+            f"\t@{label_to_write}\n"
+             "\t0;JMP\n"
         )
 
     def write_if(self, label: str) -> None:
@@ -376,15 +370,13 @@ class CodeWriter:
         self.write_comment(f"if-goto {label}")
 
         self.output_stream.write(
-             "\t@SP\n"       #top->D
-             "\tAM=M-1\n"
-             "\tD=M\n"
+             "\t@SP\n"       
+             "\tAM=M-1\n"   # SP--; A=SP
+             "\tD=M\n"      # D = *SP
         )
 
-        if self.current_function:
-            self.output_stream.write(f"\t@{self.current_function}${label}\n")
-        else:
-            self.output_stream.write(f"\t@{label}\n")
+        label_to_write = self.add_prefix_to_label(label)
+        self.output_stream.write(f"\t@{label_to_write}\n")
 
         self.output_stream.write("\tD;JNE\n")
 
@@ -411,12 +403,12 @@ class CodeWriter:
         self.current_function = function_name
         self.return_address_counter = 0
 
-        self.write_label(function_name)
+        self.output_stream.write(f"({function_name})\n")
 
         for i in range(n_vars):
             # push constant 0
             self.output_stream.write(
-                "\t@0\n"
+                 "\t@0\n"
                  "\tD=A\n"         # D = 0
                  "\t@SP\n"
                  "\tA=M\n"         # A = SP
@@ -456,9 +448,11 @@ class CodeWriter:
 
         self.write_comment(f"call {function_name} {n_args}")
 
+        return_label = f"{self.current_function}$ret.{self.return_address_counter}"
+
         # push return_address
         self.output_stream.write(
-            f"\t@{function_name}$ret.{self.return_address_counter}\n"
+            f"\t@{return_label}\n"
              "\tD=A\n"         # D = return address
              "\t@SP\n"
              "\tA=M\n"         # A = SP
@@ -504,10 +498,9 @@ class CodeWriter:
         )
 
         # (return_address)
-        self.output_stream.write(f"({function_name}$ret.{self.return_address_counter})\n")
+        self.output_stream.write(f"({return_label})\n")
 
         self.return_address_counter += 1
-
 
     def write_return(self) -> None:
         """Writes assembly code that affects the return command."""
@@ -580,7 +573,20 @@ class CodeWriter:
 
         self.current_function = ""
 
+    def add_prefix_to_label(self, label: str) -> str:
+        """Adds the current function name or current file name
+            as a prefix to the given label
 
+        Args:
+            label (str): the label to add the prefix to.
+
+        Returns:
+            str: the label with the prefix.
+        """
+        if self.current_function == "":
+            return f"{self.current_file}${label}"
+        else:
+            return f"{self.current_function}${label}"
 
     def write_comment(self, comment: str) -> None:
         """Writes a comment line in the output assembly file.
