@@ -1,3 +1,10 @@
+// Bootstrap code
+@256
+D=A
+@SP
+M=D
+@Sys.init
+0;JMP
 
 // function Sys.init 0
 (Sys.init)
@@ -105,11 +112,13 @@
 	@R13
 	A=M
 	M=D
+
+// label LOOP
 (Sys.init$LOOP)
 
 // goto LOOP
-@Sys.init$LOOP
-0;JMP
+	@Sys.init$LOOP
+	0;JMP
 
 // function Sys.main 5
 (Sys.main)
@@ -396,75 +405,31 @@
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
+	A=A-1
 	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
+	A=A-1
 	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
+	A=A-1
 	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
+	A=A-1
 	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
 
 // return
 	@LCL
@@ -578,21 +543,10 @@
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
+	A=A-1
 	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
 
 // return
 	@LCL

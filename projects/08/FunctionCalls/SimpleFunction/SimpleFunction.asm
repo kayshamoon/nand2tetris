@@ -3,8 +3,6 @@
 D=A
 @SP
 M=D
-@Sys.init
-0;JMP
 
 // function SimpleFunction.test 2
 (SimpleFunction.test)
@@ -49,21 +47,10 @@ M=D
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M+D
 
 // not
 	@SP
@@ -84,21 +71,10 @@ M=D
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M+D
 
 // C_PUSH argument 1
 	@1
@@ -114,21 +90,10 @@ M=D
 
 // sub
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D-M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M-D
 
 // return
 	@LCL

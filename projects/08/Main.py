@@ -35,8 +35,8 @@ def translate_file(
             "D=A\n"     # D = 256
             "@SP\n"
             "M=D\n"     # SP = D (256)
-            "@Sys.init\n"
-            "0;JMP\n"
+            # "@Sys.init\n"
+            # "0;JMP\n"
         )
         # code_writer.write_call("Sys.init", 0)
 

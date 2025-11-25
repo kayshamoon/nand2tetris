@@ -62,44 +62,18 @@ class CodeWriter:
 
         self.write_comment(command)
 
-        if command == "add":
-            self.output_stream.write(
-                "\t@SP\n" #top of the stack -> R13 
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"
-                "\tM=D\n"
-                "\t@SP\n"   #SP--
-                "\tM=M-1\n"
-                "\t@SP\n"   #top of the stack -> D
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"  #add the numbers and save to D
-                "\tM=D+M\n"
-                "\tD=M\n"
-                "\t@SP\n"   #result -> top of the stack
-                "\tA=M-1\n"
-                "\tM=D\n"
-            )
+        if command in {"add", "sub"}:
+            if command == "add":
+                comp_command = "M+D"
+            else:
+                comp_command = "M-D"
 
-        if command == "sub":
             self.output_stream.write(
-                "\t@SP\n"  # top of the stack -> R13 
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"
-                "\tM=D\n"
-                "\t@SP\n"  # SP--
-                "\tM=M-1\n"
-                "\t@SP\n"  # top of the stack -> D
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"  # sub the numbers and save to D
-                "\tM=D-M\n"
-                "\tD=M\n"
-                "\t@SP\n"  # result -> top of the stack
-                "\tA=M-1\n"
-                "\tM=D\n"
+                "\t@SP\n"     
+                "\tAM=M-1\n"  # SP--; A=SP
+                "\tD=M\n"     # D = *SP
+                "\tA=A-1\n"   # A = SP - 1
+                f"\tM={comp_command}\n"
             )
 
         if command == "neg":
@@ -109,44 +83,20 @@ class CodeWriter:
                 "\tM=-M\n"
             )
 
-        if command == "and":
+        if command in {"and", "or"}:
+            if command == "and":
+                comp_command = "D&M"
+            else:
+                comp_command = "D|M"
+
             self.output_stream.write(
-                "\t@SP\n"  # top of the stack -> R13 
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"
-                "\tM=D\n"
-                "\t@SP\n"  # SP--
-                "\tM=M-1\n"
-                "\t@SP\n"  # top of the stack -> D
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"  # "and" the numbers and save to D
-                "\tM=D&M\n"
-                "\tD=M\n"
-                "\t@SP\n"  # result -> top of the stack
-                "\tA=M-1\n"
-                "\tM=D\n"
+                "\t@SP\n"     
+                "\tAM=M-1\n"  # SP--; A=SP
+                "\tD=M\n"     # D = *SP
+                "\tA=A-1\n"   # A = SP - 1
+                f"\tM={comp_command}\n"
             )
-        if command == "or":
-            self.output_stream.write(
-                "\t@SP\n"  # top of the stack -> R13 
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"
-                "\tM=D\n"
-                "\t@SP\n"  # SP--
-                "\tM=M-1\n"
-                "\t@SP\n"  # top of the stack -> D
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"  # "or" the numbers and save to D
-                "\tM=D|M\n"
-                "\tD=M\n"
-                "\t@SP\n"  # result -> top of the stack
-                "\tA=M-1\n"
-                "\tM=D\n"
-            )
+
         if command == "not":
             self.output_stream.write(
                 "\t@SP\n"
@@ -339,6 +289,9 @@ class CodeWriter:
         """
         # This is irrelevant for project 7,
         # you will implement this in project 8!
+
+        self.write_comment(f"label {label}")
+
         label_to_write = self.add_prefix_to_label(label)
 
         self.output_stream.write(f"({label_to_write})\n")
@@ -571,7 +524,6 @@ class CodeWriter:
              "\t0;JMP\n"       # goto return_address
         )
 
-        self.current_function = ""
 
     def add_prefix_to_label(self, label: str) -> str:
         """Adds the current function name or current file name

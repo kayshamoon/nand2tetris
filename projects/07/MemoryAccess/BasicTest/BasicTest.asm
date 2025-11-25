@@ -1,3 +1,8 @@
+// Bootstrap code
+@256
+D=A
+@SP
+M=D
 
 // C_PUSH constant 10
 	@10
@@ -190,21 +195,10 @@
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M+D
 
 // C_PUSH argument 1
 	@1
@@ -220,21 +214,10 @@
 
 // sub
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D-M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M-D
 
 // C_PUSH this 6
 	@6
@@ -262,39 +245,17 @@
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M+D
 
 // sub
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D-M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M-D
 
 // C_PUSH temp 6
 	@11
@@ -307,18 +268,7 @@
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M+D

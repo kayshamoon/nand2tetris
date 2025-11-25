@@ -1,3 +1,8 @@
+// Bootstrap code
+@256
+D=A
+@SP
+M=D
 
 // C_PUSH constant 17
 	@17
@@ -32,14 +37,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE0
+	@$TRUE_0
 	D;JEQ
 	D=0
-	@END0
+	@$END_0
 	0;JMP
-(TRUE0)
+($TRUE_0)
 	D=-1
-(END0)
+($END_0)
 	@SP
 	A=M
 	M=D
@@ -79,14 +84,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE1
+	@$TRUE_1
 	D;JEQ
 	D=0
-	@END1
+	@$END_1
 	0;JMP
-(TRUE1)
+($TRUE_1)
 	D=-1
-(END1)
+($END_1)
 	@SP
 	A=M
 	M=D
@@ -126,14 +131,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE2
+	@$TRUE_2
 	D;JEQ
 	D=0
-	@END2
+	@$END_2
 	0;JMP
-(TRUE2)
+($TRUE_2)
 	D=-1
-(END2)
+($END_2)
 	@SP
 	A=M
 	M=D
@@ -173,14 +178,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE3
+	@$TRUE_3
 	D;JLT
 	D=0
-	@END3
+	@$END_3
 	0;JMP
-(TRUE3)
+($TRUE_3)
 	D=-1
-(END3)
+($END_3)
 	@SP
 	A=M
 	M=D
@@ -220,14 +225,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE4
+	@$TRUE_4
 	D;JLT
 	D=0
-	@END4
+	@$END_4
 	0;JMP
-(TRUE4)
+($TRUE_4)
 	D=-1
-(END4)
+($END_4)
 	@SP
 	A=M
 	M=D
@@ -267,14 +272,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE5
+	@$TRUE_5
 	D;JLT
 	D=0
-	@END5
+	@$END_5
 	0;JMP
-(TRUE5)
+($TRUE_5)
 	D=-1
-(END5)
+($END_5)
 	@SP
 	A=M
 	M=D
@@ -314,14 +319,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE6
+	@$TRUE_6
 	D;JGT
 	D=0
-	@END6
+	@$END_6
 	0;JMP
-(TRUE6)
+($TRUE_6)
 	D=-1
-(END6)
+($END_6)
 	@SP
 	A=M
 	M=D
@@ -361,14 +366,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE7
+	@$TRUE_7
 	D;JGT
 	D=0
-	@END7
+	@$END_7
 	0;JMP
-(TRUE7)
+($TRUE_7)
 	D=-1
-(END7)
+($END_7)
 	@SP
 	A=M
 	M=D
@@ -408,14 +413,14 @@
 	D=M
 	@R14
 	D=D-M
-	@TRUE8
+	@$TRUE_8
 	D;JGT
 	D=0
-	@END8
+	@$END_8
 	0;JMP
-(TRUE8)
+($TRUE_8)
 	D=-1
-(END8)
+($END_8)
 	@SP
 	A=M
 	M=D
@@ -451,21 +456,10 @@
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M+D
 
 // C_PUSH constant 112
 	@112
@@ -478,21 +472,10 @@
 
 // sub
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D-M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M-D
 
 // neg
 	@SP
@@ -501,21 +484,10 @@
 
 // and
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
+	A=A-1
 	M=D&M
-	D=M
-	@SP
-	A=M-1
-	M=D
 
 // C_PUSH constant 82
 	@82
@@ -528,21 +500,10 @@
 
 // or
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
+	A=A-1
 	M=D|M
-	D=M
-	@SP
-	A=M-1
-	M=D
 
 // not
 	@SP
