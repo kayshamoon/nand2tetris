@@ -1,8 +1,3 @@
-// Bootstrap code
-@256
-D=A
-@SP
-M=D
 
 // C_PUSH constant 17
 	@17
@@ -26,30 +21,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@$FALSE.0
+	D;JNE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@$TRUE_0
-	D;JEQ
-	D=0
-	@$END_0
+	A=M-1
+	M=-1
+	@$END.0
 	0;JMP
-($TRUE_0)
-	D=-1
-($END_0)
+($FALSE.0)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+($END.0)
 
 // C_PUSH constant 17
 	@17
@@ -73,30 +58,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@$FALSE.1
+	D;JNE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@$TRUE_1
-	D;JEQ
-	D=0
-	@$END_1
+	A=M-1
+	M=-1
+	@$END.1
 	0;JMP
-($TRUE_1)
-	D=-1
-($END_1)
+($FALSE.1)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+($END.1)
 
 // C_PUSH constant 16
 	@16
@@ -120,30 +95,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@$FALSE.2
+	D;JNE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@$TRUE_2
-	D;JEQ
-	D=0
-	@$END_2
+	A=M-1
+	M=-1
+	@$END.2
 	0;JMP
-($TRUE_2)
-	D=-1
-($END_2)
+($FALSE.2)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+($END.2)
 
 // C_PUSH constant 892
 	@892
@@ -167,30 +132,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@$FALSE.3
+	D;JGE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@$TRUE_3
-	D;JLT
-	D=0
-	@$END_3
+	A=M-1
+	M=-1
+	@$END.3
 	0;JMP
-($TRUE_3)
-	D=-1
-($END_3)
+($FALSE.3)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+($END.3)
 
 // C_PUSH constant 891
 	@891
@@ -214,30 +169,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@$FALSE.4
+	D;JGE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@$TRUE_4
-	D;JLT
-	D=0
-	@$END_4
+	A=M-1
+	M=-1
+	@$END.4
 	0;JMP
-($TRUE_4)
-	D=-1
-($END_4)
+($FALSE.4)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+($END.4)
 
 // C_PUSH constant 891
 	@891
@@ -261,30 +206,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@$FALSE.5
+	D;JGE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@$TRUE_5
-	D;JLT
-	D=0
-	@$END_5
+	A=M-1
+	M=-1
+	@$END.5
 	0;JMP
-($TRUE_5)
-	D=-1
-($END_5)
+($FALSE.5)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+($END.5)
 
 // C_PUSH constant 32767
 	@32767
@@ -308,30 +243,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@$FALSE.6
+	D;JLE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@$TRUE_6
-	D;JGT
-	D=0
-	@$END_6
+	A=M-1
+	M=-1
+	@$END.6
 	0;JMP
-($TRUE_6)
-	D=-1
-($END_6)
+($FALSE.6)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+($END.6)
 
 // C_PUSH constant 32766
 	@32766
@@ -355,30 +280,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@$FALSE.7
+	D;JLE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@$TRUE_7
-	D;JGT
-	D=0
-	@$END_7
+	A=M-1
+	M=-1
+	@$END.7
 	0;JMP
-($TRUE_7)
-	D=-1
-($END_7)
+($FALSE.7)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+($END.7)
 
 // C_PUSH constant 32766
 	@32766
@@ -402,30 +317,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@$FALSE.8
+	D;JLE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@$TRUE_8
-	D;JGT
-	D=0
-	@$END_8
+	A=M-1
+	M=-1
+	@$END.8
 	0;JMP
-($TRUE_8)
-	D=-1
-($END_8)
+($FALSE.8)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+($END.8)
 
 // C_PUSH constant 57
 	@57

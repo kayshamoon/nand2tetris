@@ -1,8 +1,3 @@
-// Bootstrap code
-@256
-D=A
-@SP
-M=D
 
 // C_PUSH constant 7
 	@7

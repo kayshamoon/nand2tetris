@@ -20,10 +20,12 @@ class CodeWriter:
         """
         self.output_stream = output_stream
         self.current_file = ""
-        self.label_counter = 0
+        self.arithmetic_label_counter = 0
+        self.current_function = ""
+        self.return_address_counter = 0
 
     def set_file_name(self, filename: str) -> None:
-        """Informs the code writer that the translation of a new VM file is 
+        """Informs the code writer that the translation of a new VM file is
         started.
 
         Args:
@@ -40,10 +42,10 @@ class CodeWriter:
         # the function "translate_file" in Main.py using python's os library,
         # For example, using code similar to:
         # input_filename, input_extension = os.path.splitext(os.path.basename(input_file.name))
-        self.current_file = filename
+        self.current_file = filename.split(".")[0]
 
     def write_arithmetic(self, command: str) -> None:
-        """Writes assembly code that is the translation of the given 
+        """Writes assembly code that is the translation of the given
         arithmetic command. For the commands eq, lt, gt, you should correctly
         compare between all numbers our computer supports, and we define the
         value "true" to be -1, and "false" to be 0.
@@ -60,44 +62,18 @@ class CodeWriter:
 
         self.write_comment(command)
 
-        if command == "add":
-            self.output_stream.write(
-                "\t@SP\n" #top of the stack -> R13 
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"
-                "\tM=D\n"
-                "\t@SP\n"   #SP--
-                "\tM=M-1\n"
-                "\t@SP\n"   #top of the stack -> D
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"  #add the numbers and save to D
-                "\tM=D+M\n"
-                "\tD=M\n"
-                "\t@SP\n"   #result -> top of the stack
-                "\tA=M-1\n"
-                "\tM=D\n"
-            )
+        if command in {"add", "sub"}:
+            if command == "add":
+                comp_command = "M+D"
+            else:
+                comp_command = "M-D"
 
-        if command == "sub":
             self.output_stream.write(
-                "\t@SP\n"  # top of the stack -> R13 
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"
-                "\tM=D\n"
-                "\t@SP\n"  # SP--
-                "\tM=M-1\n"
-                "\t@SP\n"  # top of the stack -> D
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"  # sub the numbers and save to D
-                "\tM=D-M\n"
-                "\tD=M\n"
-                "\t@SP\n"  # result -> top of the stack
-                "\tA=M-1\n"
-                "\tM=D\n"
+                "\t@SP\n"     
+                "\tAM=M-1\n"  # SP--; A=SP
+                "\tD=M\n"     # D = *SP
+                "\tA=A-1\n"   # A = SP - 1
+                f"\tM={comp_command}\n"
             )
 
         if command == "neg":
@@ -107,44 +83,20 @@ class CodeWriter:
                 "\tM=-M\n"
             )
 
-        if command == "and":
+        if command in {"and", "or"}:
+            if command == "and":
+                comp_command = "D&M"
+            else:
+                comp_command = "D|M"
+
             self.output_stream.write(
-                "\t@SP\n"  # top of the stack -> R13 
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"
-                "\tM=D\n"
-                "\t@SP\n"  # SP--
-                "\tM=M-1\n"
-                "\t@SP\n"  # top of the stack -> D
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"  # "and" the numbers and save to D
-                "\tM=D&M\n"
-                "\tD=M\n"
-                "\t@SP\n"  # result -> top of the stack
-                "\tA=M-1\n"
-                "\tM=D\n"
+                "\t@SP\n"     
+                "\tAM=M-1\n"  # SP--; A=SP
+                "\tD=M\n"     # D = *SP
+                "\tA=A-1\n"   # A = SP - 1
+                f"\tM={comp_command}\n"
             )
-        if command == "or":
-            self.output_stream.write(
-                "\t@SP\n"  # top of the stack -> R13 
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"
-                "\tM=D\n"
-                "\t@SP\n"  # SP--
-                "\tM=M-1\n"
-                "\t@SP\n"  # top of the stack -> D
-                "\tA=M-1\n"
-                "\tD=M\n"
-                "\t@R13\n"  # "or" the numbers and save to D
-                "\tM=D|M\n"
-                "\tD=M\n"
-                "\t@SP\n"  # result -> top of the stack
-                "\tA=M-1\n"
-                "\tM=D\n"
-            )
+
         if command == "not":
             self.output_stream.write(
                 "\t@SP\n"
@@ -169,54 +121,34 @@ class CodeWriter:
             self.output_stream.write(
                 "\t@SP\n"
                 "\tAM=M-1\n"   # SP--; A=SP
-                "\tD=M\n"      # D = *SP
-                "\t@R14\n"
-                "\tM=D\n"      # R14 = arg2
-                
-                "\t@SP\n"
-                "\tAM=M-1\n"   # SP--; A=SP
-                "\tD=M\n"      # D = *SP
-                "\t@R13\n"
-                "\tM=D\n"      # R13 = arg1
-            )
-            # calc x-y and store in D
-            self.output_stream.write(
-                "\t@R13\n"
-                "\tD=M\n"      # D = arg1
-                "\t@R14\n"
-                "\tD=D-M\n"    # D = arg1 - arg2
+                "\tD=M\n"      # D = *SP (arg2)
+                "\tA=A-1\n"    # A = SP - 1
+                "\tD=M-D\n"    # D = arg1-arg2
             )
 
             if command == "eq":
-                jump_command = "JEQ"
+                jump_command = "JNE"
             elif command == "gt":
-                jump_command = "JGT"
+                jump_command = "JLE"
             else:
-                jump_command = "JLT"
+                jump_command = "JGE"
 
-            # set D to -1 (true) or 0 (false)
+            # push to stack -1 (true) or 0 (false)
             self.output_stream.write(
-                f"\t@TRUE{self.label_counter}\n"
-                f"\tD;{jump_command}\n"  # if condition is met, jump to TRUE
-                 "\tD=0\n"                # D = false
-                f"\t@END{self.label_counter}\n"
-                 "\t0;JMP\n"
-                f"(TRUE{self.label_counter})\n"
-                 "\tD=-1\n"               # D = true
-                f"(END{self.label_counter})\n"
-            )
-            self.label_counter += 1
-
-            # push D to stack
-            self.output_stream.write(
+                f"\t@{self.current_function}$FALSE.{self.arithmetic_label_counter}\n"
+                f"\tD;{jump_command}\n"   # if condition is false jump to FALSE
                 "\t@SP\n"
-                "\tA=M\n"      # A = SP
-                "\tM=D\n"      # *SP = D
+                "\tA=M-1\n"               # A = SP - 1
+                "\tM=-1\n"                # push true(-1) to stack
+                f"\t@{self.current_function}$END.{self.arithmetic_label_counter}\n"
+                "\t0;JMP\n"               # jump to END
+                f"({self.current_function}$FALSE.{self.arithmetic_label_counter})\n"
                 "\t@SP\n"
-                "\tM=M+1\n"    # SP++
+                "\tA=M-1\n"               # A = SP - 1
+                "\tM=0\n"                # push false(0) to stack
+                f"({self.current_function}$END.{self.arithmetic_label_counter})\n"
             )
-
-
+            self.arithmetic_label_counter += 1
 
     def write_push_pop(self, command: str, segment: str, index: int) -> None:
         """Writes assembly code that is the translation of the given
@@ -236,98 +168,92 @@ class CodeWriter:
             raise ValueError(f"invalid command: {command} {segment} {index}")
 
         if command == "C_POP" and segment == "constant":
-            raise ValueError(f"cannot pop to constant segment: {command} {segment} {index}")
+            raise ValueError(
+                f"cannot pop to constant segment: {command} {segment} {index}")
+
+        if segment == "pointer" and index > 1:
+            raise ValueError(f"invalid pointer index: {index}")
+
+        symbol = {
+            "static": f"{self.current_file}.{index}",
+            "local": "LCL",
+            "argument": "ARG",
+            "this": "THIS",
+            "that": "THAT",
+            "temp": 5,
+            "pointer": 3
+        }
 
         self.write_comment(f"{command} {segment} {index}")
 
-        # read address of segment[index] to A register
-
-        if segment == "constant":
-            # simply load index to A
-            self.output_stream.write(
-                f"\t@{index}\n"
-                 "\tD=A\n"  # D = index
-                 "\t@SP\n"
-                 "\tA=M\n"  # A = SP
-                 "\tM=D\n"  # *SP = D
-                 "\t@SP\n"
-                 "\tM=M+1\n"  # SP++
-            )
-        else:
-            if segment == "static":
-                # creates new variable named current_file.index
-                self.output_stream.write(
-                    f"\t@{self.current_file}.{index}\n"
-                )
-            elif segment == "pointer":
-                # pointer 0 is THIS (RAM[3]), pointer 1 is THAT (RAM[4])
-                if index not in {0, 1}:
-                    raise ValueError(f"invalid pointer index: {index}")
-
-                self.output_stream.write(
-                    f"\t@{3 + index}\n"
-                )
-            elif segment == "temp":
-                # temp segment is mapped to RAM[5]-RAM[12]
-                self.output_stream.write(
-                    f"\t@{5 + index}\n"
-                )
-
-            elif segment in {"argument", "local", "this", "that"}:
+        if command == "C_PUSH":
+            # load *segment[index] to D
+            if segment == "constant":
+                # simply load index to A
                 self.output_stream.write(
                     f"\t@{index}\n"
-                     "\tD=A\n"
-
+                    "\tD=A\n"  # D = index
                 )
-                if segment == "argument":
-                    self.output_stream.write(
-                        "\t@ARG\n"
-                    )
-                elif segment == "local":
-                    self.output_stream.write(
-                        "\t@LCL\n"
-                    )
-                elif segment == "this":
-                    self.output_stream.write(
-                        "\t@THIS\n"
-                    )
-                elif segment == "that":
-                    self.output_stream.write(
-                        "\t@THAT\n"
-                    )
-
+            elif segment == "static":
                 self.output_stream.write(
-                    "\tA=M+D\n"
+                    f"\t@{symbol[segment]}\n"
+                    "\tD=M\n"
                 )
-
-            # now A register has the address of segment[index]
-
-            if command == "C_PUSH":
-                # push the value at D into the stack
+            elif segment == "temp" or segment == "pointer":
                 self.output_stream.write(
-                    "\tD=M\n"      # D = segment[index]
-                    "\t@SP\n"
-                    "\tA=M\n"      # A = SP
-                    "\tM=D\n"      # *SP = D
-                    "\t@SP\n"
-                    "\tM=M+1\n"    # SP++
+                    f"\t@{symbol[segment] + index}\n"
+                    "\tD=M\n"
                 )
-            elif command == "C_POP":
-                # pop the topmost stack value into segment[index]
+            else:  # local, argument, this, that, static
                 self.output_stream.write(
-                    "\tD=A\n"      # D = address of segment[index]
-                    "\t@R13\n"     # use R13 as a temp variable
-                    "\tM=D\n"      # R13 = address of segment[index]
-                    "\t@SP\n"
-                    "\tAM=M-1\n"   # SP--; A=SP
-                    "\tD=M\n"      # D = *SP
-                    "\t@R13\n"
-                    "\tA=M\n"      # A = segment[index] address
-                    "\tM=D\n"      # segment[index] = D
+                    f"\t@{index}\n"
+                    "\tD=A\n"
+                    f"\t@{symbol[segment]}\n"
+                    "\tA=D+M\n"
+                    "\tD=M\n"
                 )
 
+            # push D to stack
+            self.output_stream.write(
+                "\t@SP\n"
+                "\tA=M\n"  # A = SP
+                "\tM=D\n"  # *SP = D
+                "\t@SP\n"
+                "\tM=M+1\n"  # SP++
+            )
 
+        else:  # command == "C_POP"
+            # load address of segment[index] to D
+            if segment == "static":
+                self.output_stream.write(
+                    f"\t@{symbol[segment]}\n"
+                    "\tD=A\n"
+                )
+            elif segment == "temp" or segment == "pointer":
+                self.output_stream.write(
+                    f"\t@{symbol[segment] + index}\n"
+                    "\tD=A\n"
+                )
+            else:  # local, argument, this, that, static
+                self.output_stream.write(
+                    f"\t@{index}\n"
+                    "\tD=A\n"
+                    f"\t@{symbol[segment]}\n"
+                    "\tA=D+M\n"
+                    "\tD=A\n"
+                )
 
+            # pop into segment[index]
+            self.output_stream.write(
+                "\t@R13\n"  # use R13 as a temp variable
+                "\tM=D\n"  # R13 = address of segment[index]
+                "\t@SP\n"
+                "\tAM=M-1\n"  # SP--; A=SP
+                "\tD=M\n"  # D = *SP
+                "\t@R13\n"
+                "\tA=M\n"  # A = segment[index] address
+                "\tM=D\n"  # segment[index] = D
+            )
 
     def write_label(self, label: str) -> None:
         """Writes assembly code that affects the label command.
