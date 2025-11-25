@@ -35,10 +35,8 @@ def translate_file(
             "D=A\n"     # D = 256
             "@SP\n"
             "M=D\n"     # SP = D (256)
-            # "@Sys.init\n"
-            # "0;JMP\n"
         )
-        # code_writer.write_call("Sys.init", 0)
+        code_writer.write_call("Sys.init", 0)
 
     while parser.has_more_commands():
         parser.advance()

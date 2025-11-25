@@ -358,11 +358,18 @@ class CodeWriter:
 
         self.output_stream.write(f"({function_name})\n")
 
+        if n_vars == 0:
+            return
+
+         # initialize local variables to 0
+
+        self.output_stream.write(
+            "\t@0\n"
+            "\tD=A\n"  # D = 0
+        )
         for i in range(n_vars):
             # push constant 0
             self.output_stream.write(
-                 "\t@0\n"
-                 "\tD=A\n"         # D = 0
                  "\t@SP\n"
                  "\tA=M\n"         # A = SP
                  "\tM=D\n"         # *SP = 0

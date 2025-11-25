@@ -1,8 +1,58 @@
 // Bootstrap code
-	@256
+@256
+D=A
+@SP
+M=D
+
+// call Sys.init 0
+	@$ret.0
 	D=A
 	@SP
+	A=M
 	M=D
+	@SP
+	M=M+1
+	@LCL
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@ARG
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THIS
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THAT
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@SP
+	D=M
+	@5
+	D=D-A
+	@ARG
+	M=D
+	@SP
+	D=M
+	@LCL
+	M=D
+	@Sys.init
+	0;JMP
+($ret.0)
 
 // C_PUSH constant 0
 	@0
@@ -28,7 +78,8 @@
 	A=M
 	M=D
 
-(LOOP_START)
+// label LOOP_START
+(BasicLoop$LOOP_START)
 
 // C_PUSH argument 0
 	@0
@@ -56,21 +107,10 @@
 
 // add
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D+M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M+D
 
 // C_POP local 0
 	@0
@@ -110,21 +150,10 @@
 
 // sub
 	@SP
-	A=M-1
+	AM=M-1
 	D=M
-	@R13
-	M=D
-	@SP
-	M=M-1
-	@SP
-	A=M-1
-	D=M
-	@R13
-	M=D-M
-	D=M
-	@SP
-	A=M-1
-	M=D
+	A=A-1
+	M=M-D
 
 // C_POP argument 0
 	@0
@@ -157,7 +186,7 @@
 	@SP
 	AM=M-1
 	D=M
-	@LOOP_START
+	@BasicLoop$LOOP_START
 	D;JNE
 
 // C_PUSH local 0

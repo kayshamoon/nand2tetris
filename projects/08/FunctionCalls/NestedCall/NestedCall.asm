@@ -3,8 +3,56 @@
 D=A
 @SP
 M=D
-@Sys.init
-0;JMP
+
+// call Sys.init 0
+	@$ret.0
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@LCL
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@ARG
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THIS
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THAT
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@SP
+	D=M
+	@5
+	D=D-A
+	@ARG
+	M=D
+	@SP
+	D=M
+	@LCL
+	M=D
+	@Sys.init
+	0;JMP
+($ret.0)
 
 // function Sys.init 0
 (Sys.init)
@@ -129,29 +177,21 @@ M=D
 	M=D
 	@SP
 	M=M+1
-	@0
-	D=A
 	@SP
 	A=M
 	M=D
 	@SP
 	M=M+1
-	@0
-	D=A
 	@SP
 	A=M
 	M=D
 	@SP
 	M=M+1
-	@0
-	D=A
 	@SP
 	A=M
 	M=D
 	@SP
 	M=M+1
-	@0
-	D=A
 	@SP
 	A=M
 	M=D
@@ -408,28 +448,28 @@ M=D
 	AM=M-1
 	D=M
 	A=A-1
-	M=D+M
+	M=M+D
 
 // add
 	@SP
 	AM=M-1
 	D=M
 	A=A-1
-	M=D+M
+	M=M+D
 
 // add
 	@SP
 	AM=M-1
 	D=M
 	A=A-1
-	M=D+M
+	M=M+D
 
 // add
 	@SP
 	AM=M-1
 	D=M
 	A=A-1
-	M=D+M
+	M=M+D
 
 // return
 	@LCL
@@ -546,7 +586,7 @@ M=D
 	AM=M-1
 	D=M
 	A=A-1
-	M=D+M
+	M=M+D
 
 // return
 	@LCL
