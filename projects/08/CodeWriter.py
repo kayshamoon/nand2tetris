@@ -121,52 +121,34 @@ class CodeWriter:
             self.output_stream.write(
                 "\t@SP\n"
                 "\tAM=M-1\n"   # SP--; A=SP
-                "\tD=M\n"      # D = *SP
-                "\t@R14\n"
-                "\tM=D\n"      # R14 = arg2
-                
-                "\t@SP\n"
-                "\tAM=M-1\n"   # SP--; A=SP
-                "\tD=M\n"      # D = *SP
-                "\t@R13\n"
-                "\tM=D\n"      # R13 = arg1
-            )
-            # calc x-y and store in D
-            self.output_stream.write(
-                "\t@R13\n"
-                "\tD=M\n"      # D = arg1
-                "\t@R14\n"
-                "\tD=D-M\n"    # D = arg1 - arg2
+                "\tD=M\n"      # D = *SP (arg2)
+                "\tA=A-1\n"    # A = SP - 1
+                "\tD=M-D\n"    # D = arg1-arg2
             )
 
             if command == "eq":
-                jump_command = "JEQ"
+                jump_command = "JNE"
             elif command == "gt":
-                jump_command = "JGT"
+                jump_command = "JLE"
             else:
-                jump_command = "JLT"
+                jump_command = "JGE"
 
-            # set D to -1 (true) or 0 (false)
+            # push to stack -1 (true) or 0 (false)
             self.output_stream.write(
-                f"\t@{self.current_function}$TRUE_{self.arithmetic_label_counter}\n"
-                f"\tD;{jump_command}\n"   # if condition is true, jump to TRUE
-                "\tD=0\n"                 # D = false (0)
-                f"\t@{self.current_function}$END_{self.arithmetic_label_counter}\n"
+                f"\t@{self.current_function}$FALSE.{self.arithmetic_label_counter}\n"
+                f"\tD;{jump_command}\n"   # if condition is false jump to FALSE
+                "\t@SP\n"
+                "\tA=M-1\n"               # A = SP - 1
+                "\tM=-1\n"                # push true(-1) to stack
+                f"\t@{self.current_function}$END.{self.arithmetic_label_counter}\n"
                 "\t0;JMP\n"               # jump to END
-                f"({self.current_function}$TRUE_{self.arithmetic_label_counter})\n"
-                "\tD=-1\n"                # D = true (-1)
-                f"({self.current_function}$END_{self.arithmetic_label_counter})\n"
+                f"({self.current_function}$FALSE.{self.arithmetic_label_counter})\n"
+                "\t@SP\n"
+                "\tA=M-1\n"               # A = SP - 1
+                "\tM=0\n"                # push false(0) to stack
+                f"({self.current_function}$END.{self.arithmetic_label_counter})\n"
             )
             self.arithmetic_label_counter += 1
-
-            # push D to stack
-            self.output_stream.write(
-                "\t@SP\n"
-                "\tA=M\n"      # A = SP
-                "\tM=D\n"      # *SP = D
-                "\t@SP\n"
-                "\tM=M+1\n"    # SP++
-            )
 
     def write_push_pop(self, command: str, segment: str, index: int) -> None:
         """Writes assembly code that is the translation of the given
