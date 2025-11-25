@@ -8,6 +8,8 @@ Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 import os
 import sys
 import typing
+from ensurepip import bootstrap
+
 from Parser import Parser
 from CodeWriter import CodeWriter
 
@@ -76,13 +78,14 @@ if "__main__" == __name__:
         files_to_translate = [
             os.path.join(argument_path, filename)
             for filename in os.listdir(argument_path)]
+        bootstrap = ("Sys.vm" in [os.path.basename(path) for path in files_to_translate])
         output_path = os.path.join(argument_path, os.path.basename(
             argument_path))
     else:
         files_to_translate = [argument_path]
         output_path, extension = os.path.splitext(argument_path)
+        bootstrap = (os.path.basename(argument_path) == "Sys.vm")
     output_path += ".asm"
-    bootstrap = True
     with open(output_path, 'w') as output_file:
         for input_path in files_to_translate:
             filename, extension = os.path.splitext(input_path)
