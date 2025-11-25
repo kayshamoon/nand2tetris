@@ -1,58 +1,3 @@
-// Bootstrap code
-@256
-D=A
-@SP
-M=D
-
-// call Sys.init 0
-	@$ret.0
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@LCL
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@ARG
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THIS
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THAT
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@SP
-	D=M
-	@5
-	D=D-A
-	@ARG
-	M=D
-	@SP
-	D=M
-	@LCL
-	M=D
-	@Sys.init
-	0;JMP
-($ret.0)
 
 // function SimpleFunction.test 2
 (SimpleFunction.test)
@@ -73,7 +18,7 @@ M=D
 	@0
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -85,7 +30,7 @@ M=D
 	@1
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -109,7 +54,7 @@ M=D
 	@0
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -128,7 +73,7 @@ M=D
 	@1
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M

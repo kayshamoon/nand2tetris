@@ -61,7 +61,7 @@ M=D
 	@0
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -85,7 +85,7 @@ M=D
 	@1
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -237,7 +237,7 @@ M=D
 	@0
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -261,7 +261,7 @@ M=D
 	@1
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M

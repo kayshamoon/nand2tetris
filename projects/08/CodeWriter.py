@@ -168,95 +168,92 @@ class CodeWriter:
             raise ValueError(f"invalid command: {command} {segment} {index}")
 
         if command == "C_POP" and segment == "constant":
-            raise ValueError(f"cannot pop to constant segment: {command} {segment} {index}")
+            raise ValueError(
+                f"cannot pop to constant segment: {command} {segment} {index}")
+
+        if segment == "pointer" and index > 1:
+            raise ValueError(f"invalid pointer index: {index}")
+
+        symbol = {
+            "static": f"{self.current_file}.{index}",
+            "local": "LCL",
+            "argument": "ARG",
+            "this": "THIS",
+            "that": "THAT",
+            "temp": 5,
+            "pointer": 3
+        }
 
         self.write_comment(f"{command} {segment} {index}")
 
-        # read address of segment[index] to A register
-
-        if segment == "constant":
-            # simply load index to A
-            self.output_stream.write(
-                f"\t@{index}\n"
-                 "\tD=A\n"  # D = index
-                 "\t@SP\n"
-                 "\tA=M\n"  # A = SP
-                 "\tM=D\n"  # *SP = D
-                 "\t@SP\n"
-                 "\tM=M+1\n"  # SP++
-            )
-        else:
-            if segment == "static":
-                # creates new variable named current_file.index
-                self.output_stream.write(
-                    f"\t@{self.current_file}.{index}\n"
-                )
-            elif segment == "pointer":
-                # pointer 0 is THIS (RAM[3]), pointer 1 is THAT (RAM[4])
-                if index not in {0, 1}:
-                    raise ValueError(f"invalid pointer index: {index}")
-
-                self.output_stream.write(
-                    f"\t@{3 + index}\n"
-                )
-            elif segment == "temp":
-                # temp segment is mapped to RAM[5]-RAM[12]
-                self.output_stream.write(
-                    f"\t@{5 + index}\n"
-                )
-
-            elif segment in {"argument", "local", "this", "that"}:
+        if command == "C_PUSH":
+            # load *segment[index] to D
+            if segment == "constant":
+                # simply load index to A
                 self.output_stream.write(
                     f"\t@{index}\n"
-                     "\tD=A\n"
-
+                    "\tD=A\n"  # D = index
                 )
-                if segment == "argument":
-                    self.output_stream.write(
-                        "\t@ARG\n"
-                    )
-                elif segment == "local":
-                    self.output_stream.write(
-                        "\t@LCL\n"
-                    )
-                elif segment == "this":
-                    self.output_stream.write(
-                        "\t@THIS\n"
-                    )
-                elif segment == "that":
-                    self.output_stream.write(
-                        "\t@THAT\n"
-                    )
-
+            elif segment == "static":
                 self.output_stream.write(
-                    "\tA=M+D\n"
+                    f"\t@{symbol[segment]}\n"
+                    "\tD=M\n"
+                )
+            elif segment == "temp" or segment == "pointer":
+                self.output_stream.write(
+                    f"\t@{symbol[segment] + index}\n"
+                    "\tD=M\n"
+                )
+            else:  # local, argument, this, that, static
+                self.output_stream.write(
+                    f"\t@{index}\n"
+                    "\tD=A\n"
+                    f"\t@{symbol[segment]}\n"
+                    "\tA=D+M\n"
+                    "\tD=M\n"
                 )
 
-            # now A register has the address of segment[index]
+            # push D to stack
+            self.output_stream.write(
+                "\t@SP\n"
+                "\tA=M\n"  # A = SP
+                "\tM=D\n"  # *SP = D
+                "\t@SP\n"
+                "\tM=M+1\n"  # SP++
+            )
 
-            if command == "C_PUSH":
-                # push the value at D into the stack
+        else:  # command == "C_POP"
+            # load address of segment[index] to D
+            if segment == "static":
                 self.output_stream.write(
-                    "\tD=M\n"      # D = segment[index]
-                    "\t@SP\n"
-                    "\tA=M\n"      # A = SP
-                    "\tM=D\n"      # *SP = D
-                    "\t@SP\n"
-                    "\tM=M+1\n"    # SP++
+                    f"\t@{symbol[segment]}\n"
+                    "\tD=A\n"
                 )
-            elif command == "C_POP":
-                # pop the topmost stack value into segment[index]
+            elif segment == "temp" or segment == "pointer":
                 self.output_stream.write(
-                    "\tD=A\n"      # D = address of segment[index]
-                    "\t@R13\n"     # use R13 as a temp variable
-                    "\tM=D\n"      # R13 = address of segment[index]
-                    "\t@SP\n"
-                    "\tAM=M-1\n"   # SP--; A=SP
-                    "\tD=M\n"      # D = *SP
-                    "\t@R13\n"
-                    "\tA=M\n"      # A = segment[index] address
-                    "\tM=D\n"      # segment[index] = D
+                    f"\t@{symbol[segment] + index}\n"
+                    "\tD=A\n"
                 )
+            else:  # local, argument, this, that, static
+                self.output_stream.write(
+                    f"\t@{index}\n"
+                    "\tD=A\n"
+                    f"\t@{symbol[segment]}\n"
+                    "\tA=D+M\n"
+                    "\tD=A\n"
+                )
+
+            # pop into segment[index]
+            self.output_stream.write(
+                "\t@R13\n"  # use R13 as a temp variable
+                "\tM=D\n"  # R13 = address of segment[index]
+                "\t@SP\n"
+                "\tAM=M-1\n"  # SP--; A=SP
+                "\tD=M\n"  # D = *SP
+                "\t@R13\n"
+                "\tA=M\n"  # A = segment[index] address
+                "\tM=D\n"  # segment[index] = D
+            )
 
     def write_label(self, label: str) -> None:
         """Writes assembly code that affects the label command.

@@ -253,7 +253,7 @@ M=D
 	@1
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=A
 	@R13
 	M=D
@@ -277,7 +277,7 @@ M=D
 	@2
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=A
 	@R13
 	M=D
@@ -301,7 +301,7 @@ M=D
 	@3
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=A
 	@R13
 	M=D
@@ -387,7 +387,7 @@ M=D
 	@0
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -399,7 +399,7 @@ M=D
 	@1
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -411,7 +411,7 @@ M=D
 	@2
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -423,7 +423,7 @@ M=D
 	@3
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -435,7 +435,7 @@ M=D
 	@4
 	D=A
 	@LCL
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -564,7 +564,7 @@ M=D
 	@0
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M

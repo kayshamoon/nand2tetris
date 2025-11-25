@@ -61,7 +61,7 @@ M=D
 	@0
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -82,30 +82,20 @@ M=D
 	@SP
 	AM=M-1
 	D=M
-	@R14
-	M=D
+	A=A-1
+	D=M-D
+	@Main.fibonacci$FALSE.0
+	D;JGE
 	@SP
-	AM=M-1
-	D=M
-	@R13
-	M=D
-	@R13
-	D=M
-	@R14
-	D=D-M
-	@Main.fibonacci$TRUE_0
-	D;JLT
-	D=0
-	@Main.fibonacci$END_0
+	A=M-1
+	M=-1
+	@Main.fibonacci$END.0
 	0;JMP
-(Main.fibonacci$TRUE_0)
-	D=-1
-(Main.fibonacci$END_0)
+(Main.fibonacci$FALSE.0)
 	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
+	A=M-1
+	M=0
+(Main.fibonacci$END.0)
 
 // if-goto IF_TRUE
 	@SP
@@ -125,7 +115,7 @@ M=D
 	@0
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -184,7 +174,7 @@ M=D
 	@0
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
@@ -262,7 +252,7 @@ M=D
 	@0
 	D=A
 	@ARG
-	A=M+D
+	A=D+M
 	D=M
 	@SP
 	A=M
