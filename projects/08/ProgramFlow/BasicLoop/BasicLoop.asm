@@ -24,7 +24,7 @@
 	M=D
 
 // label LOOP_START
-(BasicLoop$LOOP_START)
+(Bootstrap$LOOP_START)
 
 // C_PUSH argument 0
 	@0
@@ -131,7 +131,7 @@
 	@SP
 	AM=M-1
 	D=M
-	@BasicLoop$LOOP_START
+	@Bootstrap$LOOP_START
 	D;JNE
 
 // C_PUSH local 0

@@ -5,7 +5,7 @@ D=A
 M=D
 
 // call Sys.init 0
-	@$ret.0
+	@Bootstrap$ret.0
 	D=A
 	@SP
 	A=M
@@ -52,7 +52,76 @@ M=D
 	M=D
 	@Sys.init
 	0;JMP
-($ret.0)
+(Bootstrap$ret.0)
+
+// function Sys.init 0
+(Sys.init)
+
+// C_PUSH constant 4
+	@4
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+
+// call Main.fibonacci 1
+	@Sys.init$ret.0
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@LCL
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@ARG
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THIS
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THAT
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@SP
+	D=M
+	@6
+	D=D-A
+	@ARG
+	M=D
+	@SP
+	D=M
+	@LCL
+	M=D
+	@Main.fibonacci
+	0;JMP
+(Sys.init$ret.0)
+
+// label WHILE
+(Sys.init$WHILE)
+
+// goto WHILE
+	@Sys.init$WHILE
+	0;JMP
 
 // function Main.fibonacci 0
 (Main.fibonacci)
@@ -375,73 +444,4 @@ M=D
 	M=D
 	@R14
 	A=M
-	0;JMP
-
-// function Sys.init 0
-(Sys.init)
-
-// C_PUSH constant 4
-	@4
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-
-// call Main.fibonacci 1
-	@Sys.init$ret.0
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@LCL
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@ARG
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THIS
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THAT
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@SP
-	D=M
-	@6
-	D=D-A
-	@ARG
-	M=D
-	@SP
-	D=M
-	@LCL
-	M=D
-	@Main.fibonacci
-	0;JMP
-(Sys.init$ret.0)
-
-// label WHILE
-(Sys.init$WHILE)
-
-// goto WHILE
-	@Sys.init$WHILE
 	0;JMP

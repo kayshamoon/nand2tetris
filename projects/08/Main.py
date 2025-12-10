@@ -38,6 +38,7 @@ def translate_file(
             "@SP\n"
             "M=D\n"     # SP = D (256)
         )
+        code_writer.current_function = "Bootstrap"
         code_writer.write_call("Sys.init", 0)
 
     while parser.has_more_commands():
@@ -78,7 +79,8 @@ if "__main__" == __name__:
         files_to_translate = [
             os.path.join(argument_path, filename)
             for filename in os.listdir(argument_path)]
-        bootstrap = ("Sys.vm" in [os.path.basename(path) for path in files_to_translate])
+        files_to_translate.sort(key=lambda p: (os.path.basename(p) != "Sys.vm", p))
+        bootstrap = True
         output_path = os.path.join(argument_path, os.path.basename(
             argument_path))
     else:

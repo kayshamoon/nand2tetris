@@ -5,7 +5,7 @@ D=A
 M=D
 
 // call Sys.init 0
-	@$ret.0
+	@Bootstrap$ret.0
 	D=A
 	@SP
 	A=M
@@ -52,7 +52,7 @@ M=D
 	M=D
 	@Sys.init
 	0;JMP
-($ret.0)
+(Bootstrap$ret.0)
 
 // function Sys.init 0
 (Sys.init)

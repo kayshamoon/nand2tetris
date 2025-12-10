@@ -5,7 +5,7 @@ D=A
 M=D
 
 // call Sys.init 0
-	@$ret.0
+	@Bootstrap$ret.0
 	D=A
 	@SP
 	A=M
@@ -52,7 +52,277 @@ M=D
 	M=D
 	@Sys.init
 	0;JMP
-($ret.0)
+(Bootstrap$ret.0)
+
+// function Sys.init 0
+(Sys.init)
+
+// C_PUSH constant 6
+	@6
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+
+// C_PUSH constant 8
+	@8
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+
+// call Class1.set 2
+	@Sys.init$ret.0
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@LCL
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@ARG
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THIS
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THAT
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@SP
+	D=M
+	@7
+	D=D-A
+	@ARG
+	M=D
+	@SP
+	D=M
+	@LCL
+	M=D
+	@Class1.set
+	0;JMP
+(Sys.init$ret.0)
+
+// C_POP temp 0
+	@5
+	D=A
+	@R13
+	M=D
+	@SP
+	AM=M-1
+	D=M
+	@R13
+	A=M
+	M=D
+
+// C_PUSH constant 23
+	@23
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+
+// C_PUSH constant 15
+	@15
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+
+// call Class2.set 2
+	@Sys.init$ret.1
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@LCL
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@ARG
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THIS
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THAT
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@SP
+	D=M
+	@7
+	D=D-A
+	@ARG
+	M=D
+	@SP
+	D=M
+	@LCL
+	M=D
+	@Class2.set
+	0;JMP
+(Sys.init$ret.1)
+
+// C_POP temp 0
+	@5
+	D=A
+	@R13
+	M=D
+	@SP
+	AM=M-1
+	D=M
+	@R13
+	A=M
+	M=D
+
+// call Class1.get 0
+	@Sys.init$ret.2
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@LCL
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@ARG
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THIS
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THAT
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@SP
+	D=M
+	@5
+	D=D-A
+	@ARG
+	M=D
+	@SP
+	D=M
+	@LCL
+	M=D
+	@Class1.get
+	0;JMP
+(Sys.init$ret.2)
+
+// call Class2.get 0
+	@Sys.init$ret.3
+	D=A
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@LCL
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@ARG
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THIS
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@THAT
+	D=M
+	@SP
+	A=M
+	M=D
+	@SP
+	M=M+1
+	@SP
+	D=M
+	@5
+	D=D-A
+	@ARG
+	M=D
+	@SP
+	D=M
+	@LCL
+	M=D
+	@Class2.get
+	0;JMP
+(Sys.init$ret.3)
+
+// label WHILE
+(Sys.init$WHILE)
+
+// goto WHILE
+	@Sys.init$WHILE
+	0;JMP
 
 // function Class1.set 0
 (Class1.set)
@@ -404,274 +674,4 @@ M=D
 	M=D
 	@R14
 	A=M
-	0;JMP
-
-// function Sys.init 0
-(Sys.init)
-
-// C_PUSH constant 6
-	@6
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-
-// C_PUSH constant 8
-	@8
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-
-// call Class1.set 2
-	@Sys.init$ret.0
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@LCL
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@ARG
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THIS
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THAT
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@SP
-	D=M
-	@7
-	D=D-A
-	@ARG
-	M=D
-	@SP
-	D=M
-	@LCL
-	M=D
-	@Class1.set
-	0;JMP
-(Sys.init$ret.0)
-
-// C_POP temp 0
-	@5
-	D=A
-	@R13
-	M=D
-	@SP
-	AM=M-1
-	D=M
-	@R13
-	A=M
-	M=D
-
-// C_PUSH constant 23
-	@23
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-
-// C_PUSH constant 15
-	@15
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-
-// call Class2.set 2
-	@Sys.init$ret.1
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@LCL
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@ARG
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THIS
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THAT
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@SP
-	D=M
-	@7
-	D=D-A
-	@ARG
-	M=D
-	@SP
-	D=M
-	@LCL
-	M=D
-	@Class2.set
-	0;JMP
-(Sys.init$ret.1)
-
-// C_POP temp 0
-	@5
-	D=A
-	@R13
-	M=D
-	@SP
-	AM=M-1
-	D=M
-	@R13
-	A=M
-	M=D
-
-// call Class1.get 0
-	@Sys.init$ret.2
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@LCL
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@ARG
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THIS
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THAT
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@SP
-	D=M
-	@5
-	D=D-A
-	@ARG
-	M=D
-	@SP
-	D=M
-	@LCL
-	M=D
-	@Class1.get
-	0;JMP
-(Sys.init$ret.2)
-
-// call Class2.get 0
-	@Sys.init$ret.3
-	D=A
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@LCL
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@ARG
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THIS
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@THAT
-	D=M
-	@SP
-	A=M
-	M=D
-	@SP
-	M=M+1
-	@SP
-	D=M
-	@5
-	D=D-A
-	@ARG
-	M=D
-	@SP
-	D=M
-	@LCL
-	M=D
-	@Class2.get
-	0;JMP
-(Sys.init$ret.3)
-
-// label WHILE
-(Sys.init$WHILE)
-
-// goto WHILE
-	@Sys.init$WHILE
 	0;JMP

@@ -115,7 +115,7 @@
 	M=D
 
 // label MAIN_LOOP_START
-(FibonacciSeries$MAIN_LOOP_START)
+(Bootstrap$MAIN_LOOP_START)
 
 // C_PUSH argument 0
 	@0
@@ -133,15 +133,15 @@
 	@SP
 	AM=M-1
 	D=M
-	@FibonacciSeries$COMPUTE_ELEMENT
+	@Bootstrap$COMPUTE_ELEMENT
 	D;JNE
 
 // goto END_PROGRAM
-	@FibonacciSeries$END_PROGRAM
+	@Bootstrap$END_PROGRAM
 	0;JMP
 
 // label COMPUTE_ELEMENT
-(FibonacciSeries$COMPUTE_ELEMENT)
+(Bootstrap$COMPUTE_ELEMENT)
 
 // C_PUSH that 0
 	@0
@@ -270,8 +270,8 @@
 	M=D
 
 // goto MAIN_LOOP_START
-	@FibonacciSeries$MAIN_LOOP_START
+	@Bootstrap$MAIN_LOOP_START
 	0;JMP
 
 // label END_PROGRAM
-(FibonacciSeries$END_PROGRAM)
+(Bootstrap$END_PROGRAM)
