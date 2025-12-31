@@ -6,6 +6,7 @@ as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
 Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 """
 import typing
+import re
 
 
 class JackTokenizer:
@@ -98,10 +99,60 @@ class JackTokenizer:
         Args:
             input_stream (typing.TextIO): input stream.
         """
-        # Your code goes here!
-        # A good place to start is to read all the lines of the input:
-        # input_lines = input_stream.read().splitlines()
-        pass
+        text = input_stream.read()
+
+        # remove /** comments
+        text = re.sub(r"/\*\*[\s\S]*?\*/", "", text)
+
+        # remove /* comments
+        text = re.sub(r"/\*[\s\S]*?\*/", "", text)
+
+        input_lines = text.splitlines()
+
+        # remove /* comments
+        # is_comment = False
+        # for i in range(len(input_lines)):
+        #     line = input_lines[i]
+        #     while "/*" in line or "/**" in line or "*/" in line:
+        #         if is_comment:
+        #             if "*/" in line:
+        #                 line = line.split("*/", 1)[1]
+        #                 is_comment = False
+        #             else:
+        #                 line = ""
+        #         else:
+        #             if "/*" in line or "/**" in line:
+        #                 if "*/" in line:
+        #                     parts = line.split("/*", 1)
+        #                     line = parts[0]
+        #                 elif "/**" in line:
+        #                     parts = line.split("/**", 1)
+        #                     line = parts[0]
+        #
+        #                 if "*/" in parts[1]:
+        #                     line += " " + parts[1].split("*/", 1)[1]
+        #                 else:
+        #                     is_comment = True
+        #
+        #     input_lines[i] = line
+
+        # remove // comments
+        for i in range(len(input_lines)):
+            line = input_lines[i]
+            line = line.split("//")[0]
+            input_lines[i] = line.strip()
+
+        # tokenize the input using regular expressions
+        self.tokens = []
+        for line in input_lines:
+            self.tokens.extend(re.findall(
+                    r'"[^"\n]*"'  # string
+                    r'|\d+'        # integer
+                    r'|[A-Za-z_]\w*'  # identifiers
+                    r'|[{}\[\]().,;+\-*/&|<>=~^#]',  # symbols
+                    line
+            ))
+        self.current_token = None
 
     def has_more_tokens(self) -> bool:
         """Do we have more tokens in the input?
@@ -109,16 +160,15 @@ class JackTokenizer:
         Returns:
             bool: True if there are more tokens, False otherwise.
         """
-        # Your code goes here!
-        pass
+        return len(self.tokens) > 0
 
     def advance(self) -> None:
         """Gets the next token from the input and makes it the current token. 
         This method should be called if has_more_tokens() is true. 
         Initially there is no current token.
         """
-        # Your code goes here!
-        pass
+        if self.has_more_tokens():
+            self.current_token = self.tokens.pop(0)
 
     def token_type(self) -> str:
         """
@@ -126,8 +176,30 @@ class JackTokenizer:
             str: the type of the current token, can be
             "KEYWORD", "SYMBOL", "IDENTIFIER", "INT_CONST", "STRING_CONST"
         """
-        # Your code goes here!
-        pass
+        if self.current_token in {
+            "class", "constructor", "function", "method", "field", "static",
+            "var", "int", "char", "boolean", "void", "true", "false", "null",
+            "this", "let", "do", "if", "else", "while", "return"
+        }:
+            return "KEYWORD"
+
+        elif self.current_token in {
+            '{', '}', '(', ')', '[', ']', '.', ',', ';', '+', '-', '*', '/',
+            '&', '|', '<', '>', '=', '~', '^', '#'
+        }:
+            return "SYMBOL"
+
+        elif re.match(r'^\d+$', self.current_token):
+            return "INT_CONST"
+
+        elif re.match(r'^".*"$', self.current_token):
+            return "STRING_CONST"
+
+        elif re.match(r'^[A-Za-z_]\w*$', self.current_token):
+            return "IDENTIFIER"
+
+        else:
+            raise ValueError(f"Unknown token type: {self.current_token}")
 
     def keyword(self) -> str:
         """
@@ -138,8 +210,30 @@ class JackTokenizer:
             "BOOLEAN", "CHAR", "VOID", "VAR", "STATIC", "FIELD", "LET", "DO", 
             "IF", "ELSE", "WHILE", "RETURN", "TRUE", "FALSE", "NULL", "THIS"
         """
-        # Your code goes here!
-        pass
+        keywords_map = {
+            "class": "CLASS",
+            "constructor": "CONSTRUCTOR",
+            "function": "FUNCTION",
+            "method": "METHOD",
+            "field": "FIELD",
+            "static": "STATIC",
+            "var": "VAR",
+            "int": "INT",
+            "char": "CHAR",
+            "boolean": "BOOLEAN",
+            "void": "VOID",
+            "true": "TRUE",
+            "false": "FALSE",
+            "null": "NULL",
+            "this": "THIS",
+            "let": "LET",
+            "do": "DO",
+            "if": "IF",
+            "else": "ELSE",
+            "while": "WHILE",
+            "return": "RETURN"
+        }
+        return keywords_map[self.current_token]
 
     def symbol(self) -> str:
         """
@@ -150,8 +244,7 @@ class JackTokenizer:
             symbol: '{' | '}' | '(' | ')' | '[' | ']' | '.' | ',' | ';' | '+' | 
               '-' | '*' | '/' | '&' | '|' | '<' | '>' | '=' | '~' | '^' | '#'
         """
-        # Your code goes here!
-        pass
+        return self.current_token
 
     def identifier(self) -> str:
         """
@@ -163,8 +256,7 @@ class JackTokenizer:
                   starting with a digit. You can assume keywords cannot be
                   identifiers, so 'self' cannot be an identifier, etc'.
         """
-        # Your code goes here!
-        pass
+        return self.current_token
 
     def int_val(self) -> int:
         """
@@ -174,8 +266,7 @@ class JackTokenizer:
             Recall that integerConstant was defined in the grammar like so:
             integerConstant: A decimal number in the range 0-32767.
         """
-        # Your code goes here!
-        pass
+        return int(self.current_token)
 
     def string_val(self) -> str:
         """
@@ -186,5 +277,4 @@ class JackTokenizer:
             StringConstant: '"' A sequence of Unicode characters not including 
                       double quote or newline '"'
         """
-        # Your code goes here!
-        pass
+        return self.current_token[1:-1]
