@@ -20,9 +20,18 @@ class Output {
 
     // Character map for displaying characters
     static Array charMaps; 
+    static int cursor_row;
+    static int cursor_col;
 
     /** Initializes the screen, and locates the cursor at the screen's top-left. */
     function void init() {
+        do Screen.init();
+        do Output.initMap();
+
+        let cursor_row = 0;
+        let cursor_col = 0;
+        do Output.moveCursor(cursor_row, cursor_col);
+        return;
     }
 
     // Initializes the character map array
@@ -145,9 +154,9 @@ class Output {
     // Creates the character map array of the given character index, using the given values.
     function void create(int index, int a, int b, int c, int d, int e,
                          int f, int g, int h, int i, int j, int k) {
-	var Array map;
+        var Array map;
 
-	let map = Array.new(11);
+        let map = Array.new(11);
         let charMaps[index] = map;
 
         let map[0] = a;
@@ -178,6 +187,17 @@ class Output {
     /** Moves the cursor to the j-th column of the i-th row,
      *  and erases the character displayed there. */
     function void moveCursor(int i, int j) {
+        if ((i < 0) | (i > 22) | (j < 0) | (j > 63)) {
+            do Sys.error(20);
+        }
+        
+        let cursor_row = i;
+        let cursor_col = j;
+
+        do Output.printChar(32); // erase screen
+        do Output.backSpace();
+
+        return;
     }
 
     /** Displays the given character at the cursor location,
@@ -185,23 +205,122 @@ class Output {
     function void printChar(char c) {
         // Your implementation should be as efficient as possible.
         // For example, you can draw multiple pixels at once, for each row.
+        var Array character_map;
+        var int address_on_screen;
+        var int cur_row;
+        var boolean is_even_column;
+        var int peek_value;
+        
+        let character_map = Output.getMap(c);
+        let address_on_screen = 16384                            // screen address
+                              + ((^(^(^(^(^cursor_row))))) * 11) // row * 32 * 11
+                              + (#cursor_col);                   // col / 2
+        let is_even_column = ((cursor_col & 1) = 0);
+        let cur_row = 0;
+        while (cur_row < 11)
+        {
+            let peek_value = Memory.peek(address_on_screen);
+            if (is_even_column) 
+            {
+                let peek_value = (peek_value & -256); // clear left 8 bits
+                let peek_value = (peek_value | character_map[cur_row]);
+            } 
+            else 
+            {
+                let peek_value = (peek_value & 256); // clear right 8 bits
+                let peek_value = (peek_value | (^(^(^(^(^(^(^(^character_map[cur_row]))))))))); // shift right 6
+            }
+
+            do Memory.poke(address_on_screen, peek_value);
+            let address_on_screen = address_on_screen + 32; // next row
+            let cur_row = cur_row + 1;
+        }
+
+        // move cursor
+        if (cursor_col = 63) // end of line
+        {
+            if (cursor_row = 22) // end of screen
+            {
+                let cursor_row = 0;
+            } 
+            else 
+            {
+                let cursor_row = cursor_row + 1;
+            }
+            let cursor_col = 0;
+        } 
+        else 
+        {
+            let cursor_col = cursor_col + 1;
+        }
+
+        return;
     }
 
     /** displays the given string starting at the cursor location,
      *  and advances the cursor appropriately. */
     function void printString(String s) {
+        var int i;
+        var int str_length;
+        var char c;
+
+        let str_length = s.length();
+        let i = 0;
+        while (i < str_length) 
+        {
+            let c = s.charAt(i);
+            do Output.printChar(c);
+            let i = i + 1;
+        }
+        return;
     }
 
     /** Displays the given integer starting at the cursor location,
      *  and advances the cursor appropriately. */
     function void printInt(int i) {
+        var String int_as_str;
+
+        let int_as_str = String.new(6);
+
+        do int_as_str.setInt(i);
+        do Output.printString(int_as_str);
+
+        do int_as_str.dispose();
+        return;
     }
 
     /** Advances the cursor to the beginning of the next line. */
     function void println() {
+        if (cursor_row = 22) // end of screen
+        {
+            let cursor_row = 0;
+        } 
+        else 
+        {
+            let cursor_row = cursor_row + 1;
+        }
+        let cursor_col = 0;
+
+        return;
     }
 
     /** Moves the cursor one column back. */
     function void backSpace() {
+        if ((cursor_row = 0) & (cursor_col = 0)) 
+        {
+            return;
+        }
+
+        if (cursor_col = 0) 
+        {
+            let cursor_row = cursor_row - 1;
+            let cursor_col = 63;
+        } 
+        else 
+        {
+            let cursor_col = cursor_col - 1;
+        }
+
+        return;
     }
 }

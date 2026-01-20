@@ -12,33 +12,84 @@
  * string-oriented operations.
  */
 class String {
+    field int max_length;
+    field int length;
+    field Array str;
     /** constructs a new empty string with a maximum length of maxLength
      *  and initial length of 0. */
     constructor String new(int maxLength) {
+        if (maxLength < 0) {
+            do Sys.error(14);
+        }
+
+        // empty string
+        if (maxLength = 0) {
+            let max_length = 0;
+            let length = 0;
+            return this;
+        }
+
+        let max_length = maxLength;
+        let length = 0;
+        let str = Array.new(maxLength);
+
+        return this;
     }
 
     /** Disposes this string. */
     method void dispose() {
+        if (max_length > 0) {
+            do Memory.deAlloc(str);
+        }
+
+        do Memory.deAlloc(this);
+        return;
     }
 
     /** Returns the current length of this string. */
     method int length() {
+        return length;
     }
 
     /** Returns the character at the j-th location of this string. */
     method char charAt(int j) {
+        if ((j < 0) | (j > (length - 1))) {
+            do Sys.error(15);
+        }
+
+        return str[j];
     }
 
     /** Sets the character at the j-th location of this string to c. */
     method void setCharAt(int j, char c) {
+        if ((j < 0) | (j > (length - 1))) {
+            do Sys.error(16);
+        }
+
+        let str[j] = c;
+        return;
     }
 
     /** Appends c to this string's end and returns this string. */
     method String appendChar(char c) {
+        if (length = max_length) {
+            do Sys.error(17);
+        }
+
+        let str[length] = c;
+        let length = length + 1;
+
+        return this;
     }
 
     /** Erases the last character from this string. */
     method void eraseLastChar() {
+        if (length = 0) {
+            do Sys.error(18);
+        }
+
+        let length = length - 1;
+        return;
     }
 
     /** Returns the integer value of this string, 
@@ -50,6 +101,68 @@ class String {
         // 3.   let d = integer value of str.charAt(i)
         // 4.   let val = (val*10) + d
         // 5. return val
+        var int val;
+        var int i;
+        var int d;
+        var boolean is_negative;
+
+        let val = 0;
+        let i = 0;
+        let is_negative = false;
+
+        if (length = 0) 
+        {
+            return 0;
+        }
+
+        if (charAt(0) = 45)  // - in ascii
+        {
+            let is_negative = true;
+            let i = 1;
+        }
+
+        while (i < length) 
+        {
+            if ((charAt(i) < 48) | (charAt(i) > 57)) // not a digit
+            {
+                let i = length; // break
+            } 
+            else 
+            {
+                let d = charAt(i) - 48; // 0 in ascii
+                let val = (val * 10) + d;
+                let i = i + 1;
+            }
+        }
+
+        if (is_negative) 
+        {
+            return -val;
+        }
+        else 
+        {
+            return val;
+        }
+    }
+
+    method void setInt_abs(int val) {
+        var int lastDigit;
+        var int c;
+
+        let lastDigit = (val - ((val / 10) * 10));
+        let c = lastDigit + 48; // ascii
+
+        if (val < 10) 
+        {
+            do appendChar(c);
+            return;
+        } 
+        else 
+        {
+            do setInt_abs(val / 10);
+            do appendChar(c);
+            return;
+        }
     }
 
     /** Sets this string to hold a representation of the given value. */
@@ -61,17 +174,73 @@ class String {
         // 4.   return c (as a string)
         // 5. else
         // 6.   return int2String(val / 10).appendChar(c)
+        if (max_length < 1) 
+        {
+            do Sys.error(19);
+            return;
+        }
+        if ((max_length < 2) & ((val < 0) | (val > 9))) 
+        {
+            do Sys.error(19);
+            return;
+        }
+        if ((max_length < 3) & ((val < -9) | (val > 99))) 
+        {
+            do Sys.error(19);
+            return;
+        }
+        if ((max_length < 4) & ((val < -99) | (val > 999))) 
+        {
+            do Sys.error(19);
+            return;
+        }
+        if ((max_length < 5) & ((val < -999) | (val > 9999))) 
+        {
+            do Sys.error(19);
+            return;
+        }
+        if ((max_length < 6) & (val < -9999)) 
+        {
+            do Sys.error(19);
+            return;
+        }
+        if (val < -32767)  // cant be positive
+        {
+            do appendChar(45);  // '-'
+            do appendChar(51);  // '3'
+            do appendChar(50);  // '2'
+            do appendChar(55);  // '7'
+            do appendChar(54);  // '6'
+            do appendChar(56);  // '8'
+            return;
+        }
+
+        let length = 0;
+        if (val < 0) 
+        {
+            do appendChar(45);  // '-'
+            do setInt_abs(-val);
+            return;
+        }
+        else
+        {
+            do setInt_abs(val);
+            return;
+        }
     }
 
     /** Returns the new line character. */
     function char newLine() {
+        return 128;
     }
 
     /** Returns the backspace character. */
     function char backSpace() {
+        return 129;
     }
 
     /** Returns the double quote (") character. */
     function char doubleQuote() {
+        return 34;
     }
 }

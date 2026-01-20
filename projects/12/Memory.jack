@@ -11,20 +11,33 @@
  * consists of 32,768 words, each holding a 16-bit binary number.
  */ 
 class Memory {
+
+    static Array ram;
+    static Array freeList;
+
     /** Initializes the class. */
     function void init() {
         // Pseudocode:
         // 1. freeList = heapBase
         // 2. freeList.length = heapLength
         // 3. freeList.next = null
+        let ram = 0;
+
+        let freeList = 2048;
+        let freeList[0] = 14336;    // size = 16384 - 2048
+        let freeList[1] = 0;        // next = null
+        return;
     }
 
     /** Returns the RAM value at the given address. */
     function int peek(int address) {
+        return ram[address];
     }
 
     /** Sets the RAM value at the given address to the given value. */
     function void poke(int address, int value) {
+        let ram[address] = value;
+        return;
     }
 
     /** Finds an available RAM block of the given size and returns
@@ -41,6 +54,63 @@ class Memory {
         // 5. Return block
         // The figure MemoryTest/MemoryFreeListExample.png illustrates how
         // the freeList should look like.
+        var int prev;
+        var int cur;
+        var int cur_size;
+        var int block;
+
+        if (size < 1) 
+        {
+            do Sys.error(5);
+        }
+
+        let cur = freeList;
+        let prev = 0; // null
+
+        // first fit
+        while (~(cur = 0)) 
+        {
+            let cur_size = ram[cur];
+            
+            if (cur_size > size) // is current block large enough (if size=cur_size no space for header)
+            {    
+                if (cur_size > (size + 2)) // can split current block 
+                {
+                    // allocate from the end of cur block
+
+                    let ram[cur] = cur_size - (size + 1); // new size of cur
+                    
+                    let block = cur + ram[cur] + 1;  // address of allocated block data
+                    
+                    let ram[block - 1] = size + 1;  // size of allocated block
+                    return block; 
+                } 
+                else // cannot split current block (too small) 
+                {
+                    // allocate entire current block
+            
+                    // remove cur from freeList
+                    if (prev = 0) // cur is first block
+                    {
+                        let freeList = ram[cur + 1];
+                    } 
+                    else 
+                    {
+                        let ram[prev + 1] = ram[cur + 1];
+                    }
+                    
+                    // block = cur.data 
+                    let block = cur + 1;   // data address
+                    return block;
+                }
+            }
+            // move to next block in freeList
+            let prev = cur;
+            let cur = ram[cur + 1];
+        } 
+        
+        do Sys.error(6); // cant find block
+        return -1;
     }
 
     /** De-allocates the given object (cast as an array) by making
@@ -49,6 +119,11 @@ class Memory {
         // Pseudocode:
         // 1. segment = o - 1
         // 2. Insert segment into the freeList
+        var int segment;
+        let segment = o - 1; // base address of block
+        let ram[segment + 1] = freeList; // segment.next = freeList
+        let freeList = segment;          // freeList = segment
+        return;
     }    
 
     /** Returns the maximal element contained in the given Array/object. 
@@ -57,5 +132,25 @@ class Memory {
         // Hint: the algorithm you need to implement in Memory.alloc saves the
         // size of the allocated block in the memory cell right before the 
         // start of the block, and this can be used to implement Memory.max.
+        var int i;
+        var int size;
+        var int max_value;
+
+        let size = ram[o - 1] - 1; // o[-1] = size + 1
+
+        let max_value = o[0];
+        let i = 1;
+
+        while (i < size) 
+        {
+            if (o[i] > max_value) 
+            {
+                let max_value = o[i];
+            }
+
+            let i = i + 1;
+        }
+
+        return max_value;
     }
 }
