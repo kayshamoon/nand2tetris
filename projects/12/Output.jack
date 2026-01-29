@@ -28,9 +28,7 @@ class Output {
         do Screen.init();
         do Output.initMap();
 
-        let cursor_row = 0;
-        let cursor_col = 0;
-        do Output.moveCursor(cursor_row, cursor_col);
+        do Output.moveCursor(0, 0);
         return;
     }
 
@@ -195,7 +193,9 @@ class Output {
         let cursor_col = j;
 
         do Output.printChar(32); // erase screen
-        do Output.backSpace();
+        
+        let cursor_row = i;
+        let cursor_col = j;
 
         return;
     }
@@ -227,7 +227,7 @@ class Output {
             } 
             else 
             {
-                let peek_value = (peek_value & 256); // clear right 8 bits
+                let peek_value = (peek_value & 255); // clear right 8 bits
                 let peek_value = (peek_value | (^(^(^(^(^(^(^(^character_map[cur_row]))))))))); // shift right 6
             }
 
